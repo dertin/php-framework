@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mapping>
+    <!--
+    <rule name="catalogo">
+        <splitter>null</splitter>
+        <space>-</space>
+        <ignore>.html</ignore>
+        <ignorepreg>/[^0-9]/</ignorepreg>
+    </rule>
+
+    <url request="tdf-*/*.html" rule="catalogo|catalogo" argumentname="rubro|zona" wildcard="*">
+        <controller>buscador</controller>
+        <method>index</method>
+    </url>
+
+    <url request="tdf/*.html" rule="catalogo" argumentname="rubro" wildcard="*">
+        <controller>buscador</controller>
+        <method>index</method>
+    </url>
+    -->
+</mapping>
