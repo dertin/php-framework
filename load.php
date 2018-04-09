@@ -15,7 +15,6 @@ require_once 'config.php';
 require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload.php';
 
 try {
-
     if (OUTPUT_CONTROL) {
         // Get Unexpected output //
         $unexpected_output = ob_get_contents();
@@ -36,31 +35,27 @@ try {
     ob_end_flush();
 
     exit();
-
 } catch (\Exception $e) {
-
     try {
         $srtExceptionMessage = (string) $e->getMessage();
 
         if ($srtExceptionMessage === 'ErrorPathController') {
-
             $sCurrURLFull = Core\Debug::getCurrentUrl();
-            $sCurrURLExt = substr(strrchr($sCurrURLFull,'.'),1);
+            $sCurrURLExt = substr(strrchr($sCurrURLFull, '.'), 1);
 
             //Core\Debug::savelogfile(404, $e->getFile().$e->getLine(), 'NotFound: '.$sCurrURLFull);
 
             header('HTTP/1.1 404 Not Found', true, 404);
             header("Status: 404 Not Found");
 
-          /*
-            NOTE: BE CAREFUL YOU CAN GENERATE A LOOP
+        /*
+          NOTE: BE CAREFUL YOU CAN GENERATE A LOOP
 
-            if($sCurrURLExt != 'ico' && $sCurrURLExt != 'png' && $sCurrURLExt != 'jpg' && $sCurrURLExt != 'gif' && $sCurrURLExt != 'js' && $sCurrURLExt != 'css'){
-              $html404 = file_get_contents(HOME_URL.'info/e404');
-              echo $html404;
-            }
-          */
-
+          if($sCurrURLExt != 'ico' && $sCurrURLExt != 'png' && $sCurrURLExt != 'jpg' && $sCurrURLExt != 'gif' && $sCurrURLExt != 'js' && $sCurrURLExt != 'css'){
+            $html404 = file_get_contents(HOME_URL.'info/e404');
+            echo $html404;
+          }
+        */
         } else {
             Core\Debug::savelogfile(500, $e->getFile().$e->getLine(), $srtExceptionMessage);
             header('HTTP/1.1 500 Internal Server Error', true, 500);
@@ -70,7 +65,6 @@ try {
               header('Location: '.HOME_URL.'info/e500');
             */
         }
-
     } catch (\Exception $e) {
         echo 'Fatal error, no error log generated!';
     }

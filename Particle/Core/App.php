@@ -15,11 +15,11 @@ namespace Particle\Core;
  **/
 final class App
 {
-    private $_controller = false;
-    private $_method = false;
-    private $_args = false;
-    private $_request = false;
-    private $_currentAddons = false;
+    private $controller = false;
+    private $method = false;
+    private $args = false;
+    private $request = false;
+    private $currentAddons = false;
 
     private static $instance = null;
 
@@ -34,51 +34,51 @@ final class App
 
     final public function getAppCurrentAddons()
     {
-        return $this->_currentAddons;
+        return $this->currentAddons;
     }
 
     final public function getAppController()
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     final public function getAppMethod()
     {
-        return $this->_method;
+        return $this->method;
     }
 
     final public function getAppArgs()
     {
-        return $this->_args;
+        return $this->args;
     }
 
     final public function getAppRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     final public function setAppCurrentAddons($CurrentAddons)
     {
-        $this->_currentAddons = $CurrentAddons;
+        $this->currentAddons = $CurrentAddons;
     }
 
     final public function setAppController($Controller)
     {
-        $this->_controller = $Controller;
+        $this->controller = $Controller;
     }
 
     final public function setAppMethod($Method)
     {
-        $this->_method = $Method;
+        $this->method = $Method;
     }
 
     final public function setAppArgs($Args)
     {
-        $this->_args = $Args;
+        $this->args = $Args;
     }
 
     final public function setAppRequest($Request)
     {
-        $this->_request = $Request;
+        $this->request = $Request;
     }
 }

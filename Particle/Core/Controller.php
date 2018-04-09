@@ -13,10 +13,10 @@ use Particle\Core;
  *  @abstract
  **/
 
-abstract class Controller
+abstract class Controller extends Core\SpotLoad
 {
-    protected $_view = null;
-    protected $_args = null;
+    protected $view = null;
+    protected $args = null;
 
     private static $currentAddons;
     private static $controller;
@@ -27,17 +27,15 @@ abstract class Controller
         self::$controller = Core\App::getInstance()->getAppController();
         self::$method = Core\App::getInstance()->getAppMethod();
 
-        $this->_args = Core\App::getInstance()->getAppArgs();
+        $this->args = Core\App::getInstance()->getAppArgs();
 
         $cacheKey = Core\App::getInstance()->getAppRequest(); // $cacheKey
 
-        $this->_view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
-
+        $this->view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
     }
 
     final protected static function loadViewAddons()
     {
-
         self::$currentAddons = Core\App::getInstance()->getAppCurrentAddons();
 
         return new \Particle\Core\View(self::$currentAddons, 'index', false, true);
@@ -81,12 +79,12 @@ abstract class Controller
                 header('location:'.$path);
                 exit;
             } else {
-              header('location:'.HOME_URL.$path);
-              exit;
+                header('location:'.HOME_URL.$path);
+                exit;
             }
         } else {
-          header('location:'.HOME_URL);
-          exit;
+            header('location:'.HOME_URL);
+            exit;
         }
         throw new \Exception('Error Redirect');
         return false;
@@ -179,7 +177,7 @@ abstract class Controller
         }
     }
 
-    final protected static function self_to_utf8($string)
+    final protected static function selfToUTF8($string)
     {
         if (!mb_check_encoding($string, 'UTF-8')) {
             $fromChar = mb_detect_encoding($string);
@@ -224,14 +222,12 @@ abstract class Controller
         }
     }
 
-    final protected static function check_in_range($start_date, $end_date, $evaluame)
+    final protected static function checkDateRange($start_date, $end_date, $evaluame)
     {
         // data format YYYY-mm-dd
-
         $start_ts = strtotime($start_date);
         $end_ts = strtotime($end_date);
         $user_ts = strtotime($evaluame);
         return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
     }
-
 }

@@ -23,25 +23,25 @@ final class Request
      *
      * @var string request
      */
-    private $_request = '';
+    private $request = '';
     /**
      * controller para la solicitud del usuario.
      *
      * @var string
      */
-    private $_controller = null;
+    private $controller = null;
     /**
      * method para la solicitud del usuario.
      *
      * @var string
      */
-    private $_method = null;
+    private $method = null;
     /**
      * argumentos de la solicitud del usuario.
      *
      * @var array
      */
-    private $_args = null;
+    private $args = null;
     /**
      * array de urls definidas en el router xml.
      *
@@ -49,7 +49,7 @@ final class Request
      *
      * @var array
      */
-    private $_aURLs = array();
+    private $aURLs = array();
     /**
      * array de reglas definidas en el mapping xml
      * (las reglas se utilizan para filtrar los argumentos del request/url).
@@ -58,51 +58,51 @@ final class Request
      *
      * @var array
      */
-    private $_aRules = array();
+    private $aRules = array();
     /**
      * array con elementos para aplicar reglas y obtener los argumentos.
      * en caso de no existir toma el valor de FALSE.
      *
      * @var array
      */
-    private $_aArgsToFilter = array();
+    private $aArgsToFilter = array();
     /**
      * flag para determinar si el request es del tipo mapping o comun patron MVC.
      *
      * @var bool
      */
-    private $_flagMapping = false;
+    private $flagMapping = false;
 
     public function __construct($requestTesting = null)
     {
-        $this->_request = null;
+        $this->request = null;
 
         if (isset($_GET['request'])) {
-          $this->_request = filter_input(INPUT_GET, 'request', FILTER_SANITIZE_URL);
-        }elseif (!empty($requestTesting)) {
-          $this->_request = $requestTesting;
+            $this->request = filter_input(INPUT_GET, 'request', FILTER_SANITIZE_URL);
+        } elseif (!empty($requestTesting)) {
+            $this->request = $requestTesting;
         }
 
-        if(!empty($this->_request)){
-          $this->loadClassAttributes($this->xmlSetMapping());
+        if (!empty($this->request)) {
+            $this->loadClassAttributes($this->xmlSetMapping());
         }
 
-        if (!$this->_controller && DEFAULT_CONTROLLER) {
-            $this->_controller = DEFAULT_CONTROLLER;
+        if (!$this->controller && DEFAULT_CONTROLLER) {
+            $this->controller = DEFAULT_CONTROLLER;
         }
 
-        if (!$this->_method && !STRICT_ROUTING) {
-            $this->_method = 'index';
+        if (!$this->method && !STRICT_ROUTING) {
+            $this->method = 'index';
         }
 
-        if (!isset($this->_args)) {
-            $this->_args = array();
+        if (!isset($this->args)) {
+            $this->args = array();
         }
     }
 
     final private function xmlSetMapping()
     {
-        $this->_flagMapping = true;
+        $this->flagMapping = true;
 
         if (is_readable(MAPPING_PATH)) {
             $simplexml_load_file = simplexml_load_file(MAPPING_PATH);
@@ -116,91 +116,91 @@ final class Request
             if ($xmlData) {
                 return $xmlData;
             } else {
-                $this->_flagMapping = false;
+                $this->flagMapping = false;
                 throw new \Exception('Error File Mapping');
             }
         } else {
-            $this->_flagMapping = false;
+            $this->flagMapping = false;
             throw new \Exception('Error File Mapping');
         }
     }
 
     final private function loadClassAttributes($aMapping = false)
     {
-        if (!isset($this->_request) || !is_string($this->_request)) {
+        if (!isset($this->request) || !is_string($this->request)) {
             throw new \Exception('Bad Request');
 
             return false;
         }
 
         if (MAPPING_ROUTING) {
-            if (!isset($aMapping) || count($aMapping) <= 0 || !is_array($aMapping) || !$this->_flagMapping || !isset($aMapping['url']) || count($aMapping['url']) <= 0 || !is_array($aMapping['url'])) {
-                $this->_flagMapping = false;
+            if (!isset($aMapping) || count($aMapping) <= 0 || !is_array($aMapping) || !$this->flagMapping || !isset($aMapping['url']) || count($aMapping['url']) <= 0 || !is_array($aMapping['url'])) {
+                $this->flagMapping = false;
             } else {
-                $this->_flagMapping = true;
+                $this->flagMapping = true;
 
-                $this->_aURLs = $aMapping['url'];
+                $this->aURLs = $aMapping['url'];
 
-                if (isset($this->_aURLs['@attributes']) && is_array($this->_aURLs['@attributes'])) {
-                    $this->_aURLs[0] = $this->_aURLs;
-                    unset($this->_aURLs['@attributes']);
-                    unset($this->_aURLs['controller']);
-                    unset($this->_aURLs['method']);
-                    unset($this->_aURLs['argument']);
+                if (isset($this->aURLs['@attributes']) && is_array($this->aURLs['@attributes'])) {
+                    $this->aURLs[0] = $this->aURLs;
+                    unset($this->aURLs['@attributes']);
+                    unset($this->aURLs['controller']);
+                    unset($this->aURLs['method']);
+                    unset($this->aURLs['argument']);
                 }
 
                 if (isset($aMapping['rule']) && is_array($aMapping['rule'])) {
-                    $this->_aRules = $aMapping['rule'];
+                    $this->aRules = $aMapping['rule'];
 
-                    if (isset($this->_aRules['@attributes']) && is_array($this->_aRules['@attributes'])) {
-                        $this->_aRules[0] = $this->_aRules;
-                        unset($this->_aRules['@attributes']);
-                        unset($this->_aRules['splitter']);
-                        unset($this->_aRules['space']);
-                        unset($this->_aRules['ignore']);
-                        unset($this->_aRules['ignorepreg']);
+                    if (isset($this->aRules['@attributes']) && is_array($this->aRules['@attributes'])) {
+                        $this->aRules[0] = $this->aRules;
+                        unset($this->aRules['@attributes']);
+                        unset($this->aRules['splitter']);
+                        unset($this->aRules['space']);
+                        unset($this->aRules['ignore']);
+                        unset($this->aRules['ignorepreg']);
                     }
                 }
 
-                for ($i = 0; $i < count($this->_aURLs); ++$i) {
+                for ($i = 0; $i < count($this->aURLs); ++$i) {
                     $sWildCard = false;
 
-                    if (!isset($this->_aURLs[$i]['@attributes']['request']) || !is_string($this->_aURLs[$i]['@attributes']['request']) || empty($this->_aURLs[$i]['@attributes']['request'])) {
+                    if (!isset($this->aURLs[$i]['@attributes']['request']) || !is_string($this->aURLs[$i]['@attributes']['request']) || empty($this->aURLs[$i]['@attributes']['request'])) {
                         throw new \Exception('Bad XML Request');
                     }
-                    if (!isset($this->_aURLs[$i]['controller']) || !is_string($this->_aURLs[$i]['controller']) || empty($this->_aURLs[$i]['controller'])) {
+                    if (!isset($this->aURLs[$i]['controller']) || !is_string($this->aURLs[$i]['controller']) || empty($this->aURLs[$i]['controller'])) {
                         throw new \Exception('Bad XML Controller');
                     }
-                    if (!isset($this->_aURLs[$i]['method']) || !is_string($this->_aURLs[$i]['method']) || empty($this->_aURLs[$i]['method'])) {
+                    if (!isset($this->aURLs[$i]['method']) || !is_string($this->aURLs[$i]['method']) || empty($this->aURLs[$i]['method'])) {
                         throw new \Exception('Bad XML Method');
                     }
 
-                    if (isset($this->_aURLs[$i]['argument'])) {
-                        if (!is_array($this->_aURLs[$i]['argument'])) {
-                            if (!is_string($this->_aURLs[$i]['argument'])) {
+                    if (isset($this->aURLs[$i]['argument'])) {
+                        if (!is_array($this->aURLs[$i]['argument'])) {
+                            if (!is_string($this->aURLs[$i]['argument'])) {
                                 throw new \Exception('Bad XML Args');
                             }
                         }
                     } else {
-                        $this->_aURLs[$i]['argument'] = null;
+                        $this->aURLs[$i]['argument'] = null;
                     }
 
-                    if (isset($this->_aURLs[$i]['@attributes']['rule']) && !empty($this->_aURLs[$i]['@attributes']['rule']) && isset($this->_aURLs[$i]['@attributes']['wildcard']) && !empty($this->_aURLs[$i]['@attributes']['wildcard'])) {
-                        if (!is_string($this->_aURLs[$i]['@attributes']['rule'])) {
+                    if (isset($this->aURLs[$i]['@attributes']['rule']) && !empty($this->aURLs[$i]['@attributes']['rule']) && isset($this->aURLs[$i]['@attributes']['wildcard']) && !empty($this->aURLs[$i]['@attributes']['wildcard'])) {
+                        if (!is_string($this->aURLs[$i]['@attributes']['rule'])) {
                             throw new \Exception('Bad XML Rule');
 
                             return false;
                         }
 
-                        if (!is_string($this->_aURLs[$i]['@attributes']['wildcard'])) {
+                        if (!is_string($this->aURLs[$i]['@attributes']['wildcard'])) {
                             throw new \Exception('Bad XML WildCard');
 
                             return false;
                         }
 
-                        $intCountRule = count(explode('|', $this->_aURLs[$i]['@attributes']['rule']));
+                        $intCountRule = count(explode('|', $this->aURLs[$i]['@attributes']['rule']));
 
-                        $intCountWildCard = substr_count($this->_aURLs[$i]['@attributes']['request'], $this->_aURLs[$i]['@attributes']['wildcard']);
+                        $intCountWildCard = substr_count($this->aURLs[$i]['@attributes']['request'], $this->aURLs[$i]['@attributes']['wildcard']);
 
                         if ($intCountRule != $intCountWildCard) {
                             throw new \Exception('Bad XML Config Rule/WildCard');
@@ -208,33 +208,33 @@ final class Request
                             return false;
                         }
 
-                        $sWildCard = $this->_aURLs[$i]['@attributes']['wildcard'];
+                        $sWildCard = $this->aURLs[$i]['@attributes']['wildcard'];
                     } else {
                         $sWildCard = false;
                     }
 
-                    if ($this->compareRequestXMLURL($this->_aURLs[$i]['@attributes']['request'], $this->_request, $sWildCard)) {
-                        $this->_flagMapping = true;
+                    if ($this->compareRequestXMLURL($this->aURLs[$i]['@attributes']['request'], $this->request, $sWildCard)) {
+                        $this->flagMapping = true;
 
-                        $this->_controller = $this->_aURLs[$i]['controller'];
+                        $this->controller = $this->aURLs[$i]['controller'];
 
-                        $this->_method = $this->_aURLs[$i]['method'];
+                        $this->method = $this->aURLs[$i]['method'];
 
-                        if (isset($this->_aURLs[$i]['argument']) && !is_null($this->_aURLs[$i]['argument'])) {
-                            if (isset($this->_aURLs[$i]['argument']['value'])) {
-                                if (isset($this->_aURLs[$i]['argument']['@attributes']['name']) && !empty($this->_aURLs[$i]['argument']['@attributes']['name'])) {
-                                    $this->_args[$this->_aURLs[$i]['argument']['@attributes']['name']] = Core\Security::cleanHtml($this->_aURLs[$i]['argument']['value']);
+                        if (isset($this->aURLs[$i]['argument']) && !is_null($this->aURLs[$i]['argument'])) {
+                            if (isset($this->aURLs[$i]['argument']['value'])) {
+                                if (isset($this->aURLs[$i]['argument']['@attributes']['name']) && !empty($this->aURLs[$i]['argument']['@attributes']['name'])) {
+                                    $this->args[$this->aURLs[$i]['argument']['@attributes']['name']] = Core\Security::cleanHtml($this->aURLs[$i]['argument']['value']);
                                 } else {
-                                    $this->_args[] = Core\Security::cleanHtml($this->_aURLs[$i]['argument']['value']);
+                                    $this->args[] = Core\Security::cleanHtml($this->aURLs[$i]['argument']['value']);
                                 }
                             }
                         }
 
-                        if (is_string($sWildCard) && !empty($sWildCard) && is_string($this->_aURLs[$i]['@attributes']['rule']) && !empty($this->_aURLs[$i]['@attributes']['rule'])) {
-                            $aRuleXML = explode('|', $this->_aURLs[$i]['@attributes']['rule']);
+                        if (is_string($sWildCard) && !empty($sWildCard) && is_string($this->aURLs[$i]['@attributes']['rule']) && !empty($this->aURLs[$i]['@attributes']['rule'])) {
+                            $aRuleXML = explode('|', $this->aURLs[$i]['@attributes']['rule']);
 
-                            if (isset($this->_aURLs[$i]['@attributes']['argumentname']) && is_string($this->_aURLs[$i]['@attributes']['argumentname']) && !empty($this->_aURLs[$i]['@attributes']['argumentname'])) {
-                                $aNameAgrsXML = explode('|', $this->_aURLs[$i]['@attributes']['argumentname']);
+                            if (isset($this->aURLs[$i]['@attributes']['argumentname']) && is_string($this->aURLs[$i]['@attributes']['argumentname']) && !empty($this->aURLs[$i]['@attributes']['argumentname'])) {
+                                $aNameAgrsXML = explode('|', $this->aURLs[$i]['@attributes']['argumentname']);
 
                                 if (!isset($aNameAgrsXML) || is_null($aNameAgrsXML) || empty($aNameAgrsXML)) {
                                     $aNameAgrsXML = false;
@@ -250,23 +250,23 @@ final class Request
                             }
 
                             if (!$this->applyRule($aRuleXML, $aNameAgrsXML)) {
-                                $this->_flagMapping = false;
+                                $this->flagMapping = false;
                             }
                         }
 
                         break;
                     } else {
-                        $this->_flagMapping = false;
+                        $this->flagMapping = false;
                     }
                 }
             }
         } else {
-            $this->_flagMapping = false;
+            $this->flagMapping = false;
         }
 
         if (DEFAULT_ROUTING) {
-            if (!$this->_flagMapping) {
-                $requestTemp = $this->_request;
+            if (!$this->flagMapping) {
+                $requestTemp = $this->request;
 
                 $requestExplode = explode('/', $requestTemp);
 
@@ -275,9 +275,9 @@ final class Request
 
                 $arrayRequest = $requestExplode;
 
-                $this->_controller = strtolower(array_shift($arrayRequest));
-                $this->_method = strtolower(array_shift($arrayRequest));
-                $this->_args = Core\Security::filterAlphaNum($arrayRequest);
+                $this->controller = strtolower(array_shift($arrayRequest));
+                $this->method = strtolower(array_shift($arrayRequest));
+                $this->args = Core\Security::filterAlphaNum($arrayRequest);
             }
         }
 
@@ -307,11 +307,11 @@ final class Request
                 preg_match_all($sPregRequest, $requestURL, $result, PREG_SET_ORDER);
 
                 if (count($result) > 0) {
-                    $this->_aArgsToFilter = $result[0];
+                    $this->aArgsToFilter = $result[0];
 
-                    unset($this->_aArgsToFilter[0]);
+                    unset($this->aArgsToFilter[0]);
 
-                    $this->_aArgsToFilter = array_values($this->_aArgsToFilter);
+                    $this->aArgsToFilter = array_values($this->aArgsToFilter);
 
                     return true;
                 } else {
@@ -319,7 +319,7 @@ final class Request
                 }
             } else {
                 if ($requestXML == $requestURL) {
-                    $this->_aArgsToFilter = false;
+                    $this->aArgsToFilter = false;
 
                     return true;
                 } else {
@@ -331,7 +331,7 @@ final class Request
 
     final private function applyRule($aURLRuleXML, $aNameAgrsXML = false)
     {
-        if (!$this->_aArgsToFilter) {
+        if (!$this->aArgsToFilter) {
             return false;
         }
 
@@ -341,8 +341,8 @@ final class Request
 
         $countURLRuleXML = count($aURLRuleXML);
         $countArgsName = count($aNameAgrsXML);
-        $countRules = count($this->_aRules);
-        $countArgsToFilter = count($this->_aArgsToFilter);
+        $countRules = count($this->aRules);
+        $countArgsToFilter = count($this->aArgsToFilter);
 
         if ($countURLRuleXML != $countArgsToFilter) {
             throw new \Exception('Not applicable Rules/Wildcard ');
@@ -357,7 +357,7 @@ final class Request
         }
 
         for ($s = 0; $s < $countArgsToFilter; ++$s) {
-            $aRuleArgs[$s]['target'] = $this->_aArgsToFilter[$s];
+            $aRuleArgs[$s]['target'] = $this->aArgsToFilter[$s];
         }
 
         $countRuleArgs = count($aRuleArgs);
@@ -368,37 +368,31 @@ final class Request
 
         for ($a = 0; $a < $countRuleArgs; ++$a) {
             for ($i = 0; $i < $countRules; ++$i) {
-
-                /*echo'aaa<pre>'; var_dump($aRuleArgs[$a]['name']);
-                echo '</pre>bbb<pre>';
-                var_dump($this->_aRules[$i]['@attributes']['name']);
-                echo'</pre>';*/
-
-                if (!isset($this->_aRules[$i]['@attributes']['name'])) {
+                if (!isset($this->aRules[$i]['@attributes']['name'])) {
                     continue;
                 }
-                if ($aRuleArgs[$a]['name'] == $this->_aRules[$i]['@attributes']['name'] && $aRuleArgs[$a]['name'] != 'notargument') {
+                if ($aRuleArgs[$a]['name'] == $this->aRules[$i]['@attributes']['name'] && $aRuleArgs[$a]['name'] != 'notargument') {
                     $tempArg = $aRuleArgs[$a]['target'];
 
-                    if (!empty($this->_aRules[$i]['ignore'])) {
-                        $ignoreRule = $this->_aRules[$i]['ignore'];
+                    if (!empty($this->aRules[$i]['ignore'])) {
+                        $ignoreRule = $this->aRules[$i]['ignore'];
                         $tempArg = str_replace($ignoreRule, '', $tempArg);
                     }
 
-                    if (!empty($this->_aRules[$i]['ignorepreg'])) {
-                        $ignorePregRule = $this->_aRules[$i]['ignorepreg'];
+                    if (!empty($this->aRules[$i]['ignorepreg'])) {
+                        $ignorePregRule = $this->aRules[$i]['ignorepreg'];
                         $tempArg = preg_replace($ignorePregRule, '', $tempArg);
                     }
 
                     $tempArg = trim($tempArg);
 
-                    if (!empty($this->_aRules[$i]['space'])) {
-                        $spaceRule = $this->_aRules[$i]['space'];
+                    if (!empty($this->aRules[$i]['space'])) {
+                        $spaceRule = $this->aRules[$i]['space'];
                         $tempArg = str_replace($spaceRule, ' ', $tempArg);
                     }
 
-                    if (!empty($this->_aRules[$i]['splitter'])) {
-                        $splitterRule = $this->_aRules[$i]['splitter'];
+                    if (!empty($this->aRules[$i]['splitter'])) {
+                        $splitterRule = $this->aRules[$i]['splitter'];
                         $tempArg = explode($splitterRule, $tempArg);
                     } else {
                         throw new \Exception('Splitter Rule is not defined');
@@ -406,15 +400,15 @@ final class Request
                         return false;
                     }
 
-                    if (is_null($this->_args)) {
-                        $this->_args = array();
+                    if (is_null($this->args)) {
+                        $this->args = array();
                     }
 
                     foreach ($tempArg as $value) {
                         if (isset($aRuleNameArgs[$a]['key'])) {
-                            $this->_args[$aRuleNameArgs[$a]['key']] = $value;
+                            $this->args[$aRuleNameArgs[$a]['key']] = $value;
                         } else {
-                            array_push($this->_args, $value);
+                            array_push($this->args, $value);
                         }
                     }
 
@@ -434,21 +428,21 @@ final class Request
 
     public function getRequest()
     {
-        return $this->_request;
+        return $this->request;
     }
 
     public function getControlador()
     {
-        return $this->_controller;
+        return $this->controller;
     }
 
     public function getMetodo()
     {
-        return $this->_method;
+        return $this->method;
     }
 
     public function getArgs()
     {
-        return $this->_args;
+        return $this->args;
     }
 }

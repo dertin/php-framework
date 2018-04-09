@@ -4,12 +4,12 @@ namespace Particle\Core;
 
 final class Security
 {
-    final private static function array_map_recursive($fn, $arr, $recursive = false)
+    final private static function arrayMapRecursive($fn, $arr, $recursive = false)
     {
         $rarr = array();
 
         foreach ($arr as $k => $v) {
-            $rarr[$k] = is_array($v) ? self::array_map_recursive($fn, $v, true) : call_user_func($fn, $v);
+            $rarr[$k] = is_array($v) ? self::arrayMapRecursive($fn, $v, true) : call_user_func($fn, $v);
         }
 
         if ($recursive) {
@@ -21,18 +21,18 @@ final class Security
 
     final public static function isValidIdSQL($id)
     {
-      if(isset($id) && !empty($id) && is_numeric($id) && $id >= 0){
-        return true; // Valid Id
-      }
-      return false;
+        if (isset($id) && !empty($id) && is_numeric($id) && $id >= 0) {
+            return true; // Valid Id
+        }
+        return false;
     }
 
     final public static function isValidValueSQL($value)
     {
-      if (isset($value) && !empty($value) && is_string($value)) {
-        return true; // Valid value
-      }
-      return false;
+        if (isset($value) && !empty($value) && is_string($value)) {
+            return true; // Valid value
+        }
+        return false;
     }
 
     final public static function filterInt($int, $default = 0)
@@ -48,16 +48,15 @@ final class Security
 
     final public static function filterAlphaNum($value, $default = '')
     {
-      if (is_array($value)) {
-          $filterStr = self::array_map_recursive(array('Particle\Core\Security', 'filterAlphaNum'), array($value, $default));
-          return $filterStr;
-      } elseif (is_string($value)) {
-          $filterStr = (string) preg_replace('/[^A-Z0-9_-]/i', '', $value);
-          return trim($filterStr);
-      }
+        if (is_array($value)) {
+            $filterStr = self::arrayMapRecursive(array('Particle\Core\Security', 'filterAlphaNum'), array($value, $default));
+            return $filterStr;
+        } elseif (is_string($value)) {
+            $filterStr = (string) preg_replace('/[^A-Z0-9_-]/i', '', $value);
+            return trim($filterStr);
+        }
 
-      return $default;
-
+        return $default;
     }
 
     final public static function htmlescape($strHtml, $default = '', $removeHtml = false, $allowable_tags = null)
@@ -78,7 +77,7 @@ final class Security
     final public static function cleanHtml($filterHtml, $default = '', $removeHtml = false, $allowable_tags = null)
     {
         if (is_array($filterHtml)) {
-            $filterHtml = self::array_map_recursive(array('Particle\Core\Security', 'htmlescape'), array($filterHtml, $default, $removeHtml, $allowable_tags));
+            $filterHtml = self::arrayMapRecursive(array('Particle\Core\Security', 'htmlescape'), array($filterHtml, $default, $removeHtml, $allowable_tags));
         } elseif (is_string($filterHtml)) {
             $filterHtml = self::htmlescape($filterHtml, $default, $removeHtml, $allowable_tags);
         } else {
@@ -125,43 +124,42 @@ final class Security
 
     final public static function validateCedula($CedulaDeIdentidad)
     {
-
-    	$regexCI = '/^([0-9]{1}[.]?[0-9]{3}[.]?[0-9]{3}[-]?[0-9]{1}|[0-9]{3}[.]?[0-9]{3}[-]?[0-9]{1})$/';
-    	if (!preg_match($regexCI, $CedulaDeIdentidad)) {
-    		return false;
-    	} else {
-    		// Limpiamos los puntos y guiones para solo quedarnos con los números.
-    		$numeroCedulaDeIdentidad = preg_replace("/[^0-9]/","",$CedulaDeIdentidad);
-    		// Armarmos el array que va a permitir realizar las multiplicaciones necesarias en cada digito.
-    		$arrayCoeficiente = [2,9,8,7,6,3,4,1];
-    		// Variable donde se va a guardar el resultado de la suma.
-    		$suma = 0;
-    		// Simplemente para que se entienda que esto es el cardinal de digitos que tiene el array de coeficiente.
-    		$lenghtArrayCoeficiente = 8;
-    		// Contamos la cantidad de digitos que tiene la cadena de números de la CI que limpiamos.
-    		$lenghtCedulaDeIdentidad = strlen($numeroCedulaDeIdentidad);
-    		// Esto nos asegura que si la cédula es menor a un millón, para que el cálculo siga funcionando, simplemente le ponemos un cero antes y funciona perfecto.
-    		if ($lenghtCedulaDeIdentidad == 7) {
-    			$numeroCedulaDeIdentidad = 0 . $numeroCedulaDeIdentidad;
-    			$lenghtCedulaDeIdentidad++;
-    		}
-    		for ($i = 0; $i < $lenghtCedulaDeIdentidad; $i++) {
-    			// Voy obteniendo cada caracter de la CI.
-    			$digito = substr($numeroCedulaDeIdentidad, $i, 1);
-    			// Ahora lo forzamos a ser un int.
-    			$digitoINT = intval($digito);
-    			// Obtengo el coeficiente correspondiente a esta posición.
-    			$coeficiente = $arrayCoeficiente[$i];
-    			// Multiplico el caracter por el coeficiente y lo acumulo a la suma total
-    			$suma = $suma + $digitoINT * $coeficiente;
-    		}
-    		// si la suma es múltiplo de 10 es una ci válida
-    		if (($suma % 10) == 0) {
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	}
+        $regexCI = '/^([0-9]{1}[.]?[0-9]{3}[.]?[0-9]{3}[-]?[0-9]{1}|[0-9]{3}[.]?[0-9]{3}[-]?[0-9]{1})$/';
+        if (!preg_match($regexCI, $CedulaDeIdentidad)) {
+            return false;
+        } else {
+            // Limpiamos los puntos y guiones para solo quedarnos con los números.
+            $numeroCedulaDeIdentidad = preg_replace("/[^0-9]/", "", $CedulaDeIdentidad);
+            // Armarmos el array que va a permitir realizar las multiplicaciones necesarias en cada digito.
+            $arrayCoeficiente = [2,9,8,7,6,3,4,1];
+            // Variable donde se va a guardar el resultado de la suma.
+            $suma = 0;
+            // Simplemente para que se entienda que esto es el cardinal de digitos que tiene el array de coeficiente.
+            $lenghtArrayCoeficiente = 8;
+            // Contamos la cantidad de digitos que tiene la cadena de números de la CI que limpiamos.
+            $lenghtCedulaDeIdentidad = strlen($numeroCedulaDeIdentidad);
+            // Esto nos asegura que si la cédula es menor a un millón, para que el cálculo siga funcionando, simplemente le ponemos un cero antes y funciona perfecto.
+            if ($lenghtCedulaDeIdentidad == 7) {
+                $numeroCedulaDeIdentidad = 0 . $numeroCedulaDeIdentidad;
+                $lenghtCedulaDeIdentidad++;
+            }
+            for ($i = 0; $i < $lenghtCedulaDeIdentidad; $i++) {
+                // Voy obteniendo cada caracter de la CI.
+                $digito = substr($numeroCedulaDeIdentidad, $i, 1);
+                // Ahora lo forzamos a ser un int.
+                $digitoINT = intval($digito);
+                // Obtengo el coeficiente correspondiente a esta posición.
+                $coeficiente = $arrayCoeficiente[$i];
+                // Multiplico el caracter por el coeficiente y lo acumulo a la suma total
+                $suma = $suma + $digitoINT * $coeficiente;
+            }
+            // si la suma es múltiplo de 10 es una ci válida
+            if (($suma % 10) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     final public static function filterXSStext($valXSS, $default = '')
@@ -219,7 +217,7 @@ final class Security
     final public static function filterXSS($valXSS, $default = '')
     {
         if (is_array($valXSS)) {
-            $valXSS = self::array_map_recursive(array('Particle\Core\Security', 'filterXSStext'), array($valXSS, $default));
+            $valXSS = self::arrayMapRecursive(array('Particle\Core\Security', 'filterXSStext'), array($valXSS, $default));
         } elseif (is_string($valXSS)) {
             $valXSS = self::filterXSStext($valXSS, $default);
         } else {
@@ -253,48 +251,49 @@ final class Security
         } else {
             $semicolon = strpos($data, ';');
             $brace     = strpos($data, '}');
-             // Either ; or } must exist.
-             if (false === $semicolon && false === $brace) {
-                 return false;
-             }
-             // But neither must be in the first X characters.
-             if (false !== $semicolon && $semicolon < 3) {
-                 return false;
-             }
+            // Either ; or } must exist.
+            if (false === $semicolon && false === $brace) {
+                return false;
+            }
+            // But neither must be in the first X characters.
+            if (false !== $semicolon && $semicolon < 3) {
+                return false;
+            }
             if (false !== $brace && $brace < 4) {
                 return false;
             }
         }
         $token = $data[0];
         switch ($token) {
-             case 's':
-                     if ($strict) {
-                         if ('"' !== substr($data, -2, 1)) {
-                             return false;
-                         }
-                     } elseif (false === strpos($data, '"')) {
-                         return false;
-                     }
-                     // como no hay break; ingresa en los otros case
-             case 'a':
-             case 'O':
-                     return (bool) preg_match("/^{$token}:[0-9]+:/s", $data);
-             case 'b':
-             case 'i':
-             case 'd':
-                     $end = $strict ? '$' : '';
-                     return (bool) preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
+            case 's':
+                if ($strict) {
+                    if ('"' !== substr($data, -2, 1)) {
+                        return false;
+                    }
+                } elseif (false === strpos($data, '"')) {
+                       return false;
+                }
+                // como no hay break; ingresa en los otros case
+                // no break
+            case 'a':
+            case 'O':
+                return (bool) preg_match("/^{$token}:[0-9]+:/s", $data);
+            case 'b':
+            case 'i':
+            case 'd':
+                $end = $strict ? '$' : '';
+                return (bool) preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
         }
         return false;
     }
     // TODO: Mejora a prueba de fallos aleatorios
-    final public static function encrypt($decrypted = "", $password, $salt = SALT_CODE)
+    final public static function encrypt($decrypted = "", $password = '', $salt = SALT_CODE)
     {
         // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
         $key = hash('SHA256', $salt . $password, true);
-        if(strlen($key) < 16){
-          Core\Debug::savelogfile(0, 'ERROR', 'invalid key encrypt');
-          return null;
+        if (strlen($key) < 16) {
+            Core\Debug::savelogfile(0, 'ERROR', 'invalid key encrypt');
+            return null;
         }
         // Build $iv and $iv_base64.  We use a block size of 128 bits (AES compliant) and CBC mode.  (Note: ECB mode is inadequate as IV is not used.)
         srand();
@@ -315,7 +314,7 @@ final class Security
         return $iv_base64 . $encrypted;
     }
     // TODO: Mejora a prueba de fallos aleatorios
-    final public static function decrypt($encrypted = null, $password, $salt = SALT_CODE)
+    final public static function decrypt($encrypted = null, $password = '', $salt = SALT_CODE)
     {
         // Fix session start
         if (empty($encrypted)) {
@@ -324,9 +323,9 @@ final class Security
 
         // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
         $key = hash('SHA256', $salt . $password, true);
-        if(strlen($key) < 16){
-          Core\Debug::savelogfile(0, 'ERROR', 'invalid key decrypt');
-          return null;
+        if (strlen($key) < 16) {
+            Core\Debug::savelogfile(0, 'ERROR', 'invalid key decrypt');
+            return null;
         }
         // Retrieve $iv which is the first 22 characters plus ==, base64_decoded.
         $iv = base64_decode(substr($encrypted, 0, 22) . '==');
@@ -348,90 +347,76 @@ final class Security
 
     final public static function getIp()
     {
-      /*$requestIP = '';
+        /*$requestIP = '';
 
-      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-          $requestIP = $_SERVER['HTTP_CLIENT_IP'];
-      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-          $requestIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      } else {
-          $requestIP = $_SERVER['REMOTE_ADDR'];
-      }
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            $requestIP = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $requestIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $requestIP = $_SERVER['REMOTE_ADDR'];
+        }
 
-      return $requestIP;*/
+        return $requestIP;*/
 
-      if( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != '' )
-      {
-          $client_ip =
-             ( !empty($_SERVER['REMOTE_ADDR']) ) ?
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != '') {
+            $client_ip =
+             (!empty($_SERVER['REMOTE_ADDR'])) ?
                 $_SERVER['REMOTE_ADDR']
                 :
-                ( ( !empty($_ENV['REMOTE_ADDR']) ) ?
+                ((!empty($_ENV['REMOTE_ADDR'])) ?
                    $_ENV['REMOTE_ADDR']
                    :
-                   "unknown" );
+                   "unknown");
 
-          // los proxys van añadiendo al final de esta cabecera
-          // las direcciones ip que van "ocultando". Para localizar la ip real
-          // del usuario se comienza a mirar por el principio hasta encontrar
-          // una dirección ip que no sea del rango privado. En caso de no
-          // encontrarse ninguna se toma como valor el REMOTE_ADDR
+            // los proxys van añadiendo al final de esta cabecera
+            // las direcciones ip que van "ocultando". Para localizar la ip real
+            // del usuario se comienza a mirar por el principio hasta encontrar
+            // una dirección ip que no sea del rango privado. En caso de no
+            // encontrarse ninguna se toma como valor el REMOTE_ADDR
 
-          $entries = preg_split('/[, ]/', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            $entries = preg_split('/[, ]/', $_SERVER['HTTP_X_FORWARDED_FOR']);
 
-          reset($entries);
-          while (list(, $entry) = each($entries))
-          {
-             $entry = trim($entry);
-             if ( preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", $entry, $ip_list) )
-             {
-                // http://www.faqs.org/rfcs/rfc1918.html
-                $private_ip = array(
+            reset($entries);
+            while (list(, $entry) = each($entries)) {
+                $entry = trim($entry);
+                if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", $entry, $ip_list)) {
+                    // http://www.faqs.org/rfcs/rfc1918.html
+                    $private_ip = array(
                       '/^0\./',
                       '/^127\.0\.0\.1/',
                       '/^192\.168\..*/',
                       '/^172\.((1[6-9])|(2[0-9])|(3[0-1]))\..*/',
                       '/^10\..*/');
 
-                $found_ip = preg_replace($private_ip, $client_ip, $ip_list[1]);
+                    $found_ip = preg_replace($private_ip, $client_ip, $ip_list[1]);
 
-                if ($client_ip != $found_ip)
-                {
-                   $client_ip = $found_ip;
-                   break;
+                    if ($client_ip != $found_ip) {
+                        $client_ip = $found_ip;
+                        break;
+                    }
                 }
-             }
-          }
-       } else {
-          $client_ip =
-             ( !empty($_SERVER['REMOTE_ADDR']) ) ?
+            }
+        } else {
+            $client_ip =
+             (!empty($_SERVER['REMOTE_ADDR'])) ?
                 $_SERVER['REMOTE_ADDR']
                 :
-                ( ( !empty($_ENV['REMOTE_ADDR']) ) ?
+                ((!empty($_ENV['REMOTE_ADDR'])) ?
                    $_ENV['REMOTE_ADDR']
                    :
-                   "unknown" );
-       }
+                   "unknown");
+        }
 
-       return $client_ip;
+        return $client_ip;
     }
 
     final public static function getIPNoFORWARDED()
     {
-      /* Obtengo IP desde REMOTE_ADDR no importa si es la del proxy,
-      no obtengo desde HTTP_X_FORWARDED_FOR evitando proxy ruidosos o cabezera PHP */
-      $client_ip =
-       ( !empty($_SERVER['REMOTE_ADDR']) ) ?
-          $_SERVER['REMOTE_ADDR']
-          :
-          ( ( !empty($_ENV['REMOTE_ADDR']) ) ?
-             $_ENV['REMOTE_ADDR']
-             :
-             "unknown" );
-
-
-      return $client_ip;
-
+        /* Obtengo IP desde REMOTE_ADDR no importa si es la del proxy,
+        no obtengo desde HTTP_X_FORWARDED_FOR evitando proxy ruidosos o cabezera PHP */
+        $client_ip =(!empty($_SERVER['REMOTE_ADDR'])) ?$_SERVER['REMOTE_ADDR']:((!empty($_ENV['REMOTE_ADDR'])) ?$_ENV['REMOTE_ADDR']:"unknown");
+        return $client_ip;
     }
 
     final public static function validArrayIsNumeric($aInput)
@@ -446,92 +431,94 @@ final class Security
 
     final public static function getIntentoBruteForce($nameZone)
     {
-      $intento = 0;
+        $intento = 0;
 
-      $client_ip = self::getIPNoFORWARDED();
+        $client_ip = self::getIPNoFORWARDED();
 
-      $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
+        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
 
-      $file = @fopen($filename, 'r');
-      if(!$file){
-        // prevent loop infinito para feof
-        $file = null;
-        return 0;
-      }
-      while(!feof($file)){
-        $lineBF = fgets($file);
-        if(!$lineBF){continue;}
-        $aLineBF = explode('|', $lineBF);
-
-        if(is_array($aLineBF) && isset($aLineBF[1]) && isset($aLineBF[2])){
-          if($client_ip == trim($aLineBF[1])){
-            if(is_numeric(trim($aLineBF[2]))){
-              $intento = (int)$aLineBF[2];
-            }
-          }
+        $file = @fopen($filename, 'r');
+        if (!$file) {
+            // prevent loop infinito para feof
+            $file = null;
+            return 0;
         }
-      }
-      fclose($file);
+        while (!feof($file)) {
+            $lineBF = fgets($file);
+            if (!$lineBF) {
+                continue;
+            }
+            $aLineBF = explode('|', $lineBF);
 
-      return $intento;
+            if (is_array($aLineBF) && isset($aLineBF[1]) && isset($aLineBF[2])) {
+                if ($client_ip == trim($aLineBF[1])) {
+                    if (is_numeric(trim($aLineBF[2]))) {
+                        $intento = (int)$aLineBF[2];
+                    }
+                }
+            }
+        }
+        fclose($file);
+
+        return $intento;
     }
 
-    final public static function preventBruteForce($intento = 0, $nameZone)
+    final public static function preventBruteForce($intento = 0, $nameZone = '')
     {
-      if(empty($intento)){
-        return 0;
-      }
+        if (empty($intento)) {
+            return 0;
+        }
 
-      $client_ip = self::getIPNoFORWARDED();
-      $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
-      $file = @fopen($filename, 'a');
-      if(!$file){
-        $file = null;
-        return 0;
-      }
-      if($file && !empty($client_ip)){
-       $sDataLog = date('Y-m-d H:i:s').'|'.$client_ip.'|'.$intento;
-       fwrite($file, trim($sDataLog).PHP_EOL);
-      }
-      fclose($file);
-
+        $client_ip = self::getIPNoFORWARDED();
+        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
+        $file = @fopen($filename, 'a');
+        if (!$file) {
+            $file = null;
+            return 0;
+        }
+        if ($file && !empty($client_ip)) {
+            $sDataLog = date('Y-m-d H:i:s').'|'.$client_ip.'|'.$intento;
+            fwrite($file, trim($sDataLog).PHP_EOL);
+        }
+        fclose($file);
     }
 
     final public static function resetBruteForce($nameZone)
     {
+        $client_ip = self::getIPNoFORWARDED();
 
-      $client_ip = self::getIPNoFORWARDED();
+        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
 
-      $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
-
-      $file = @fopen($filename, 'r');
-      if(!$file){
-        // prevent loop infinito para feof
-        $file = null;
-        return 0;
-      }
-      $textNewFile =  '';
-      while(!feof($file)){
-        $lineBF = fgets($file);
-        if(!$lineBF){continue;}
-        $aLineBF = explode('|', $lineBF);
-        if(is_array($aLineBF) && isset($aLineBF[1]) && isset($aLineBF[2])){
-          if($client_ip != trim($aLineBF[1])){
-            $textNewFile .= trim($lineBF).PHP_EOL;
-          }
+        $file = @fopen($filename, 'r');
+        if (!$file) {
+            // prevent loop infinito para feof
+            $file = null;
+            return 0;
         }
-      }
-      fclose($file);
-      // creo nuevo file
-      $fileNew = @fopen($filename, 'w');
-      if(!$file){
-        // prevent loop infinito para feof
-        $file = null;
-        return 0;
-      }
-      $rSaveNewFile = fwrite($fileNew, $textNewFile);
-      fclose($fileNew);
+        $textNewFile =  '';
+        while (!feof($file)) {
+            $lineBF = fgets($file);
+            if (!$lineBF) {
+                continue;
+            }
+            $aLineBF = explode('|', $lineBF);
+            if (is_array($aLineBF) && isset($aLineBF[1]) && isset($aLineBF[2])) {
+                if ($client_ip != trim($aLineBF[1])) {
+                    $textNewFile .= trim($lineBF).PHP_EOL;
+                }
+            }
+        }
+        fclose($file);
+        // creo nuevo file
+        $fileNew = @fopen($filename, 'w');
+        if (!$file) {
+            // prevent loop infinito para feof
+            $file = null;
+            return 0;
+        }
+        $rSaveNewFile = fwrite($fileNew, $textNewFile);
+        fclose($fileNew);
 
-      return $rSaveNewFile;
+        return $rSaveNewFile;
     }
 }

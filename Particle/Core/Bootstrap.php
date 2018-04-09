@@ -28,13 +28,13 @@ final class Bootstrap
 
         $rutaControlador = PARTICLE_PATH_APPS.'Controllers'.DS.$controllerNameClass.'.php';
         if (!is_readable($rutaControlador)) {
-          foreach(glob(PARTICLE_PATH_APPS.'Controllers'.DS.'*', GLOB_ONLYDIR) as $dir) {
-            $subDirController = basename($dir);
-            $rutaControlador = PARTICLE_PATH_APPS.'Controllers'.DS.$subDirController.DS.$controllerNameClass.'.php';
-            if (is_readable($rutaControlador)) {
-              break;
+            foreach (glob(PARTICLE_PATH_APPS.'Controllers'.DS.'*', GLOB_ONLYDIR) as $dir) {
+                $subDirController = basename($dir);
+                $rutaControlador = PARTICLE_PATH_APPS.'Controllers'.DS.$subDirController.DS.$controllerNameClass.'.php';
+                if (is_readable($rutaControlador)) {
+                    break;
+                }
             }
-          }
         }
 
         $controllerClass = 'Particle\\Apps\\Controllers\\'.$controllerNameClass;

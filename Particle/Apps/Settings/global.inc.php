@@ -13,7 +13,7 @@ define('MAPPING_PATH', PARTICLE_PATH_APPS.'Router'.DS.'default.xml');
 define('DEFAULT_CONTROLLER', 'index');
 define('DEFAULT_METHOD', 'index');
 define('DEFAULT_LAYOUT', 'default');
-define('APPS_PUBLIC_IMG_PATH',PARTICLE_PATH_APPS.'public'.DS.'img'.DS);
+define('APPS_PUBLIC_IMG_PATH', PARTICLE_PATH_APPS.'public'.DS.'img'.DS);
 define('SMARTY_CACHE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'cache-smarty'.DS);
 define('SMARTY_COMPILE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'template-compiler-smarty'.DS);
 define('SMARTY_CONFIG_DIR', PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS.'configs-smarty'.DS.NAMEHOST.DS);

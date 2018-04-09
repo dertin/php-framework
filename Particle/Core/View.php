@@ -87,14 +87,13 @@ final class View extends \Smarty
 
     public function show($view = false, $customController = false, $return = false, $typereturn = false, $backend = false)
     {
-        if( !isset($view) || !is_string($view)){
-
-          if ( self::$isAddons ){ // para Addons se debe indicar el nombre de view a mostrar siempre
-            throw new \Exception('Error View Addons');
-          }else{
-            $view = self::$method;
-          }
-
+        if (!isset($view) || !is_string($view)) {
+            if (self::$isAddons) {
+                // para Addons se debe indicar el nombre de view a mostrar siempre
+                throw new \Exception('Error View Addons');
+            } else {
+                $view = self::$method;
+            }
         }
 
         if (is_string($customController)) {
@@ -151,10 +150,10 @@ final class View extends \Smarty
         $absoluteView = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.$viewController;
 
         // Change for Addons
-        if(self::$isAddons){
-          $path_view = BASE_URL_APPS.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
-          $path_static_view = BASE_URL_APPS_STATIC.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
-          $absoluteView = ADDONS_PATH.$viewController.DS.VIEWS_FOLDER;
+        if (self::$isAddons) {
+            $path_view = BASE_URL_APPS.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
+            $path_static_view = BASE_URL_APPS_STATIC.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
+            $absoluteView = ADDONS_PATH.$viewController.DS.VIEWS_FOLDER;
         }
 
         $pathView = $absoluteView.DS.$view.'.tpl';
@@ -164,7 +163,7 @@ final class View extends \Smarty
             $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layoutadmin/';
             $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layoutadmin/';
             $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layoutadmin'.DS;
-        } else if($backend == 'layoutprov'){
+        } elseif ($backend == 'layoutprov') {
             // layout frontend proveedor area privada
             $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layoutprov/';
             $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layoutprov/';
@@ -212,8 +211,8 @@ final class View extends \Smarty
                 $this->assign('_layoutParams', $_params);
             }
 
-            if(defined('VarGlobalJS')){
-              $this->assign('varGlobalToJs', VarGlobalJS);
+            if (defined('VarGlobalJS')) {
+                $this->assign('varGlobalToJs', VarGlobalJS);
             }
 
             $sHeader = $this->fetch('header.tpl', self::$cacheKey);
@@ -252,7 +251,6 @@ final class View extends \Smarty
                 }
 
                 exit();
-
             } else {
                 switch ($typereturn) {
                     case 'full':
@@ -267,7 +265,7 @@ final class View extends \Smarty
                     default:
                         return $sHeader.$sMenuTop.$sView.$sFooter;
                         break;
-               }
+                }
             }
         } else {
             throw new \Exception('Error PATH View');
@@ -286,42 +284,41 @@ final class View extends \Smarty
 
     public function setCssJsLayout($sAssetName = 'default', $layoutName = 'default')
     {
+        $aAssetConfig = AssetConfig::getInstance()->getAssetConfig($sAssetName);
 
-      $aAssetConfig = AssetConfig::getInstance()->getAssetConfig($sAssetName);
+        if (!isset($aAssetConfig['aCssFileLayout']) || !isset($aAssetConfig['aJsFileHeadLayout']) || !isset($aAssetConfig['aJsFileFooterLayout'])) {
+            return false;
+        }
 
-      if(!isset($aAssetConfig['aCssFileLayout']) || !isset($aAssetConfig['aJsFileHeadLayout']) || !isset($aAssetConfig['aJsFileFooterLayout'])){
-        return false;
-      }
+        self::$sCurrAssetName = $sAssetName;
 
-      self::$sCurrAssetName = $sAssetName;
+        $aCssFileLayout = $aAssetConfig['aCssFileLayout'];
+        $aJsFileHeadLayout= $aAssetConfig['aJsFileHeadLayout'];
+        $aJsFileFooterLayout = $aAssetConfig['aJsFileFooterLayout'];
 
-      $aCssFileLayout = $aAssetConfig['aCssFileLayout'];
-      $aJsFileHeadLayout= $aAssetConfig['aJsFileHeadLayout'];
-      $aJsFileFooterLayout = $aAssetConfig['aJsFileFooterLayout'];
+        // CSS Layout
+        if (!empty($aCssFileLayout) && is_array($aCssFileLayout)) {
+            foreach ($aCssFileLayout as $key => $fileCss) {
+                $pathCssLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/css/'.$fileCss;
+                array_unshift(self::$cssLayout, $pathCssLayout);
+            }
+        }
+        // JS Header Layout
+        if (!empty($aJsFileHeadLayout) && is_array($aJsFileHeadLayout)) {
+            foreach ($aJsFileHeadLayout as $key => $fileJsHead) {
+                $pathJsHeadLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsHead;
+                array_unshift(self::$jsHeadLayout, $pathJsHeadLayout);
+            }
+        }
+        // JS Footer Layout
+        if (!empty($aJsFileFooterLayout) && is_array($aJsFileFooterLayout)) {
+            foreach ($aJsFileFooterLayout as $key => $fileJsFooter) {
+                $pathJsFooterLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsFooter;
+                array_unshift(self::$jsLayout, $pathJsFooterLayout);
+            }
+        }
 
-      // CSS Layout
-      if (!empty($aCssFileLayout) && is_array($aCssFileLayout)) {
-          foreach ($aCssFileLayout as $key => $fileCss) {
-              $pathCssLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/css/'.$fileCss;
-              array_unshift(self::$cssLayout, $pathCssLayout);
-          }
-      }
-      // JS Header Layout
-      if (!empty($aJsFileHeadLayout) && is_array($aJsFileHeadLayout)) {
-          foreach ($aJsFileHeadLayout as $key => $fileJsHead) {
-              $pathJsHeadLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsHead;
-              array_unshift(self::$jsHeadLayout, $pathJsHeadLayout);
-          }
-      }
-      // JS Footer Layout
-      if (!empty($aJsFileFooterLayout) && is_array($aJsFileFooterLayout)) {
-          foreach ($aJsFileFooterLayout as $key => $fileJsFooter) {
-              $pathJsFooterLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsFooter;
-              array_unshift(self::$jsLayout, $pathJsFooterLayout);
-          }
-      }
-
-      return true;
+        return true;
     }
 
     public function setJs(array $js, $head = false, $customController = false, $checkUrl = false)
@@ -351,109 +348,109 @@ final class View extends \Smarty
     {
 
       /* Layout join js */
-      if (!is_array(self::$jsHeadLayout)) {
-          self::$jsHeadLayout = array();
-      }
+        if (!is_array(self::$jsHeadLayout)) {
+            self::$jsHeadLayout = array();
+        }
 
-      if (!is_array(self::$jsLayout)) {
-          self::$jsLayout = array();
-      }
+        if (!is_array(self::$jsLayout)) {
+            self::$jsLayout = array();
+        }
 
-      if(empty($sAssetName)){
-        $sAssetName = self::$sCurrAssetName;
-      }
+        if (empty($sAssetName)) {
+            $sAssetName = self::$sCurrAssetName;
+        }
 
-      $joinJsFileHeadLayout = $this->JoinFile(self::$jsHeadLayout, '.js', 'layoutHead-'.$sAssetName);
-      $joinJsFileLayout = $this->JoinFile(self::$jsLayout, '.js', 'layout-'.$sAssetName);
+        $joinJsFileHeadLayout = $this->joinFile(self::$jsHeadLayout, '.js', 'layoutHead-'.$sAssetName);
+        $joinJsFileLayout = $this->joinFile(self::$jsLayout, '.js', 'layout-'.$sAssetName);
 
-      if (isset($joinJsFileHeadLayout) && $joinJsFileHeadLayout != false) {
-        self::$jsHeadLayout = array();
-        self::$jsHeadLayout[] = $joinJsFileHeadLayout;
-      }
-      if (isset($joinJsFileLayout) && $joinJsFileLayout != false) {
-        self::$jsLayout = array();
-        self::$jsLayout[] = $joinJsFileLayout;
-      }
+        if (isset($joinJsFileHeadLayout) && $joinJsFileHeadLayout != false) {
+            self::$jsHeadLayout = array();
+            self::$jsHeadLayout[] = $joinJsFileHeadLayout;
+        }
+        if (isset($joinJsFileLayout) && $joinJsFileLayout != false) {
+            self::$jsLayout = array();
+            self::$jsLayout[] = $joinJsFileLayout;
+        }
 
-      /* Template join js */
+        /* Template join js */
 
-      if (!is_array(self::$jsHead)) {
-          self::$jsHead = array();
-      }
+        if (!is_array(self::$jsHead)) {
+            self::$jsHead = array();
+        }
 
-      if (!is_array(self::$js)) {
-          self::$js = array();
-      }
+        if (!is_array(self::$js)) {
+            self::$js = array();
+        }
 
-      if (is_string($customController)) {
-          $viewController = $customController;
-      } else {
-          $viewController = self::$controller;
-      }
-      if (is_string($customMethod)) {
-          $viewMethod = $customMethod;
-      } else {
-          $viewMethod = self::$method;
-      }
+        if (is_string($customController)) {
+            $viewController = $customController;
+        } else {
+            $viewController = self::$controller;
+        }
+        if (is_string($customMethod)) {
+            $viewMethod = $customMethod;
+        } else {
+            $viewMethod = self::$method;
+        }
 
-      $joinJsFileHead = $this->JoinFile(self::$jsHead, '.js', $viewController.$viewMethod.'Head');
-      $joinJsFile = $this->JoinFile(self::$js, '.js', $viewController.$viewMethod);
+        $joinJsFileHead = $this->joinFile(self::$jsHead, '.js', $viewController.$viewMethod.'Head');
+        $joinJsFile = $this->joinFile(self::$js, '.js', $viewController.$viewMethod);
 
-      if (isset($joinJsFileHead) && $joinJsFileHead != false) {
-        self::$jsHead = array();
-        self::$jsHead[] = $joinJsFileHead;
-      }
-      if (isset($joinJsFile) && $joinJsFile != false) {
-        self::$js = array();
-        self::$js[] = $joinJsFile;
-      }
+        if (isset($joinJsFileHead) && $joinJsFileHead != false) {
+            self::$jsHead = array();
+            self::$jsHead[] = $joinJsFileHead;
+        }
+        if (isset($joinJsFile) && $joinJsFile != false) {
+            self::$js = array();
+            self::$js[] = $joinJsFile;
+        }
     }
 
     public function createTmpCss($sAssetName = null, $customController = null, $customMethod = null)
     {
-      /* Layout join css */
+        /* Layout join css */
 
-      if (!is_array(self::$cssLayout)) {
-          self::$cssLayout = array();
-      }
+        if (!is_array(self::$cssLayout)) {
+            self::$cssLayout = array();
+        }
 
-      if(empty($sAssetName)){
-        $sAssetName = self::$sCurrAssetName;
-      }
+        if (empty($sAssetName)) {
+            $sAssetName = self::$sCurrAssetName;
+        }
 
-      $joinCssFileLayout = $this->JoinFile(self::$cssLayout, '.css', 'layout-'.$sAssetName);
+        $joinCssFileLayout = $this->joinFile(self::$cssLayout, '.css', 'layout-'.$sAssetName);
 
-      if (isset($joinCssFileLayout) && $joinCssFileLayout != false) {
-          self::$cssLayout = array(); // reset no join css
-          self::$cssLayout[] = $joinCssFileLayout; // add join css
-      }
+        if (isset($joinCssFileLayout) && $joinCssFileLayout != false) {
+            self::$cssLayout = array(); // reset no join css
+            self::$cssLayout[] = $joinCssFileLayout; // add join css
+        }
 
-      /* Template join css */
+        /* Template join css */
 
-      if (is_string($customController)) {
-          $viewController = $customController;
-      } else {
-          $viewController = self::$controller;
-      }
+        if (is_string($customController)) {
+            $viewController = $customController;
+        } else {
+            $viewController = self::$controller;
+        }
 
-      if (is_string($customMethod)) {
-          $viewMethod = $customMethod;
-      } else {
-          $viewMethod = self::$method;
-      }
+        if (is_string($customMethod)) {
+            $viewMethod = $customMethod;
+        } else {
+            $viewMethod = self::$method;
+        }
 
-      if (!is_array(self::$css)) {
-        self::$css = array();
-      }
+        if (!is_array(self::$css)) {
+            self::$css = array();
+        }
 
-      $joinCssFile = $this->JoinFile(self::$css, '.css', $viewController.$viewMethod);
+        $joinCssFile = $this->joinFile(self::$css, '.css', $viewController.$viewMethod);
 
-      if (isset($joinCssFile) && $joinCssFile != false) {
-        self::$css = array(); // reset no join css
-        self::$css[] = $joinCssFile; // add join css
-      }
+        if (isset($joinCssFile) && $joinCssFile != false) {
+            self::$css = array(); // reset no join css
+            self::$css[] = $joinCssFile; // add join css
+        }
 
-      return true;
+        return true;
     }
 
     public function setJsExternal(array $js, $head = false)
@@ -538,7 +535,7 @@ final class View extends \Smarty
         return round($mbytes, 2);
     }
 
-    private function JoinFile($aFileOpen = null, $ext = '.css', $outName = 'archivo')
+    private function joinFile($aFileOpen = null, $ext = '.css', $outName = 'archivo')
     {
 
         // ES FUNDAMENTAL LA SEGURIDAD EN ESTE PROGRAMA //
@@ -577,124 +574,114 @@ final class View extends \Smarty
         $fileNew = fopen($returnNewFile, 'a');
 
         if ($ext === '.js') {
-
             if (empty($jsCss_code)) {
                 fwrite($fileNew, $jsCss_code.PHP_EOL);
                 fclose($fileNew);
                 return $urlPublic;
             }
 
-            if(TYPEMODE == 'PROD'){
+            if (TYPEMODE == 'PROD') {
+                $post_fields = array(
+                  'js_code' => $jsCss_code,
+                  'compilation_level' => 'SIMPLE_OPTIMIZATIONS',
+                  'output_format' => 'xml',
+                  'output_info' => 'compiled_code',
+                );
 
-              $post_fields = array(
-                'js_code' => $jsCss_code,
-                'compilation_level' => 'SIMPLE_OPTIMIZATIONS',
-                'output_format' => 'xml',
-                'output_info' => 'compiled_code',
-              );
+                $ch = curl_init("https://closure-compiler.appspot.com/compile");
+                curl_setopt($ch, CURLOPT_POST, count($post_fields));
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $optimized_js = curl_exec($ch);
 
-              $ch = curl_init("https://closure-compiler.appspot.com/compile");
-              curl_setopt($ch, CURLOPT_POST, count($post_fields));
-              curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_fields));
-              curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-              $optimized_js = curl_exec($ch);
+                $xmlResultCompile = false;
+                if (isset($optimized_js) && !empty($optimized_js)) {
+                    $xmlResultCompile = simplexml_load_string($optimized_js);
+                }
 
-              $xmlResultCompile = false;
-              if (isset($optimized_js) && !empty($optimized_js)) {
-                  $xmlResultCompile = simplexml_load_string($optimized_js);
-              }
+                if ($xmlResultCompile === false || !isset($xmlResultCompile->compiledCode) || empty($xmlResultCompile->compiledCode)) {
+                    fwrite($fileNew, $jsCss_code.PHP_EOL);
+                } else {
+                    fwrite($fileNew, (string)$xmlResultCompile->compiledCode.PHP_EOL);
+                }
 
-              if ($xmlResultCompile === false || !isset($xmlResultCompile->compiledCode) || empty($xmlResultCompile->compiledCode)) {
-                  fwrite($fileNew, $jsCss_code.PHP_EOL);
-              } else {
-                  fwrite($fileNew, (string)$xmlResultCompile->compiledCode.PHP_EOL);
-              }
-
-              curl_close($ch);
-
-            }else{
-              fwrite($fileNew, $jsCss_code.PHP_EOL);
+                curl_close($ch);
+            } else {
+                fwrite($fileNew, $jsCss_code.PHP_EOL);
             }
 
             fclose($fileNew);
-
         } elseif ($ext == '.css') {
-
             if (empty($jsCss_code)) {
                 fwrite($fileNew, $jsCss_code.PHP_EOL);
                 fclose($fileNew);
                 return $urlPublic;
             }
 
-            if(TYPEMODE == 'PROD') {
-
-              // Force white-space(s) in `calc()`
-              if(strpos($jsCss_code, 'calc(') !== false) {
-                  $jsCss_code = preg_replace_callback('#(?<=[\s:])calc\(\s*(.*?)\s*\)#', function($matches) {
-                      return 'calc(' . preg_replace('#\s+#', "\x1A", $matches[1]) . ')';
-                  }, $jsCss_code);
-              }
-
-              // Remove comments
-              $jsCss_code = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $jsCss_code);
-              // Remove space after colons
-              $jsCss_code = str_replace(': ', ':', $jsCss_code);
-              // Remove whitespace
-              $jsCss_code = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $jsCss_code);
-
-              $minify_css = preg_replace(
-                array(
-                    // Remove comment(s)
-                    '#("(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\')|\/\*(?!\!)(?>.*?\*\/)|^\s*|\s*$#s',
-                    // Remove unused white-space(s)
-                    '#("(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\'|\/\*(?>.*?\*\/))|\s*+;\s*+(})\s*+|\s*+([*$~^|]?+=|[{};,>~+]|\s*+-(?![0-9\.])|!important\b)\s*+|([[(:])\s++|\s++([])])|\s++(:)\s*+(?!(?>[^{}"\']++|"(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\')*+{)|^\s++|\s++\z|(\s)\s+#si',
-                    // Replace `0(cm|em|ex|in|mm|pc|pt|px|vh|vw|%)` with `0`
-                    '#(?<=[\s:])(0)(cm|em|ex|in|mm|pc|pt|px|vh|vw|%)#si',
-                    // Replace `:0 0 0 0` with `:0`
-                    '#:(0\s+0|0\s+0\s+0\s+0)(?=[;\}]|\!important)#i',
-                    // Replace `background-position:0` with `background-position:0 0`
-                    '#(background-position):0(?=[;\}])#si',
-                    // Replace `0.6` with `.6`, but only when preceded by a white-space or `=`, `:`, `,`, `(`, `-`
-                    '#(?<=[\s=:,\(\-]|&\#32;)0+\.(\d+)#s',
-                    // Minify string value
-                    '#(\/\*(?>.*?\*\/))|(?<!content\:)([\'"])([a-z_][-\w]*?)\2(?=[\s\{\}\];,])#si',
-                    '#(\/\*(?>.*?\*\/))|(\burl\()([\'"])([^\s]+?)\3(\))#si',
-                    // Minify HEX color code
-                    '#(?<=[\s=:,\(]\#)([a-f0-6]+)\1([a-f0-6]+)\2([a-f0-6]+)\3#i',
-                    // Replace `(border|outline):none` with `(border|outline):0`
-                    '#(?<=[\{;])(border|outline):none(?=[;\}\!])#',
-                    // Remove empty selector(s)
-                    '#(\/\*(?>.*?\*\/))|(^|[\{\}])(?:[^\s\{\}]+)\{\}#s',
-                    '#\x1A#'
-                ),
-                array(
-                    '$1',
-                    '$1$2$3$4$5$6$7',
-                    '$1',
-                    ':0',
-                    '$1:0 0',
-                    '.$1',
-                    '$1$3',
-                    '$1$2$4$5',
-                    '$1$2$3',
-                    '$1:0',
-                    '$1$2',
-                    ' '
-                ),
-                $jsCss_code);
-
-              fwrite($fileNew, $minify_css.PHP_EOL);
-
-            }else{
-              fwrite($fileNew, $jsCss_code.PHP_EOL);
+            if (TYPEMODE == 'PROD') {
+                // Force white-space(s) in `calc()`
+                if (strpos($jsCss_code, 'calc(') !== false) {
+                    $jsCss_code = preg_replace_callback('#(?<=[\s:])calc\(\s*(.*?)\s*\)#', function ($matches) {
+                        return 'calc(' . preg_replace('#\s+#', "\x1A", $matches[1]) . ')';
+                    }, $jsCss_code);
+                }
+                // Remove comments
+                $jsCss_code = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $jsCss_code);
+                // Remove space after colons
+                $jsCss_code = str_replace(': ', ':', $jsCss_code);
+                // Remove whitespace
+                $jsCss_code = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $jsCss_code);
+                // @codingStandardsIgnoreStart
+                $minify_css = preg_replace(
+                  array(
+                      // Remove comment(s)
+                      '#("(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\')|\/\*(?!\!)(?>.*?\*\/)|^\s*|\s*$#s',
+                      // Remove unused white-space(s)
+                      '#("(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\'|\/\*(?>.*?\*\/))|\s*+;\s*+(})\s*+|\s*+([*$~^|]?+=|[{};,>~+]|\s*+-(?![0-9\.])|!important\b)\s*+|([[(:])\s++|\s++([])])|\s++(:)\s*+(?!(?>[^{}"\']++|"(?:[^"\\\]++|\\\.)*+"|\'(?:[^\'\\\\]++|\\\.)*+\')*+{)|^\s++|\s++\z|(\s)\s+#si',
+                      // Replace `0(cm|em|ex|in|mm|pc|pt|px|vh|vw|%)` with `0`
+                      '#(?<=[\s:])(0)(cm|em|ex|in|mm|pc|pt|px|vh|vw|%)#si',
+                      // Replace `:0 0 0 0` with `:0`
+                      '#:(0\s+0|0\s+0\s+0\s+0)(?=[;\}]|\!important)#i',
+                      // Replace `background-position:0` with `background-position:0 0`
+                      '#(background-position):0(?=[;\}])#si',
+                      // Replace `0.6` with `.6`, but only when preceded by a white-space or `=`, `:`, `,`, `(`, `-`
+                      '#(?<=[\s=:,\(\-]|&\#32;)0+\.(\d+)#s',
+                      // Minify string value
+                      '#(\/\*(?>.*?\*\/))|(?<!content\:)([\'"])([a-z_][-\w]*?)\2(?=[\s\{\}\];,])#si',
+                      '#(\/\*(?>.*?\*\/))|(\burl\()([\'"])([^\s]+?)\3(\))#si',
+                      // Minify HEX color code
+                      '#(?<=[\s=:,\(]\#)([a-f0-6]+)\1([a-f0-6]+)\2([a-f0-6]+)\3#i',
+                      // Replace `(border|outline):none` with `(border|outline):0`
+                      '#(?<=[\{;])(border|outline):none(?=[;\}\!])#',
+                      // Remove empty selector(s)
+                      '#(\/\*(?>.*?\*\/))|(^|[\{\}])(?:[^\s\{\}]+)\{\}#s',
+                      '#\x1A#'),
+                array (
+                      '$1',
+                      '$1$2$3$4$5$6$7',
+                      '$1',
+                      ':0',
+                      '$1:0 0',
+                      '.$1',
+                      '$1$3',
+                      '$1$2$4$5',
+                      '$1$2$3',
+                      '$1:0',
+                      '$1$2',
+                      ' '),
+                      $jsCss_code
+                );
+                // @codingStandardsIgnoreEnd
+                fwrite($fileNew, $minify_css.PHP_EOL);
+            } else {
+                fwrite($fileNew, $jsCss_code.PHP_EOL);
             }
 
             fclose($fileNew);
-
-          } else {
-              fclose($fileNew);
-              return false;
-          }
+        } else {
+            fclose($fileNew);
+            return false;
+        }
 
         return $urlPublic;
         // ES FUNDAMENTAL LA SEGURIDAD EN ESTE PROGRAMA //
@@ -702,32 +689,30 @@ final class View extends \Smarty
 
     public function mjmlTohtml($contMJML)
     {
+        $jsonMJML = json_encode(array('mjml' => (string)$contMJML));
 
-      $jsonMJML = json_encode(array('mjml' => (string)$contMJML));
+        if (empty($jsonMJML)) {
+            return false;
+        }
 
-      if(empty($jsonMJML)){return false;}
+        try {
+            $cURL = curl_init();
+            curl_setopt($cURL, CURLOPT_URL, "https://api.mjml.io/v1/render");
+            curl_setopt($cURL, CURLOPT_POST, 1);
+            curl_setopt($cURL, CURLOPT_POSTFIELDS, $jsonMJML);
+            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($cURL, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            //curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 3);
+            curl_setopt($cURL, CURLOPT_TIMEOUT, 0);
+            curl_setopt($cURL, CURLOPT_USERPWD, MJML_APPLICATION_ID.':'.MJML_SECRET_KEY);
+            $jsonResponse = curl_exec($cURL);
+            curl_close($cURL);
 
-      try {
-
-        $cURL = curl_init();
-        curl_setopt($cURL, CURLOPT_URL, "https://api.mjml.io/v1/render");
-        curl_setopt($cURL, CURLOPT_POST, 1);
-        curl_setopt($cURL, CURLOPT_POSTFIELDS, $jsonMJML);
-        curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($cURL, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        //curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($cURL, CURLOPT_TIMEOUT, 0);
-        curl_setopt($cURL, CURLOPT_USERPWD, MJML_APPLICATION_ID.':'.MJML_SECRET_KEY);
-        $jsonResponse = curl_exec($cURL);
-        curl_close($cURL);
-
-        // return to array
-        return json_decode($jsonResponse, true);
-
-      } catch (Exception $e) {
-        echo $e->getMessage();
-        return false;
-      }
-
+            // return to array
+            return json_decode($jsonResponse, true);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            return false;
+        }
     }
 }

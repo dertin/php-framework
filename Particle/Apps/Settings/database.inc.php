@@ -2,10 +2,11 @@
 
 namespace Particle\Apps;
 
-define('DB_FLAG_SITE', true);
-define('DB_HOST_SITE', 'localhost');
-define('DB_USER_SITE', 'root');
-define('DB_PASS_SITE', 'root');
-define('DB_NAME_SITE', 'test');
-define('DB_CHAR_SITE', 'utf8');
-define('DB_TYPE_SITE', 'mysql');
+define('DB_FLAG_CONFIG', true);
+define('DB_HOST_CONFIG', 'localhost');
+define('DB_USER_CONFIG', 'root');
+define('DB_PASS_CONFIG', 'root');
+define('DB_NAME_CONFIG', 'test');
+define('DB_TYPE_CONFIG', 'mysql');
+define('DB_DRIVER_CONFIG', 'pdo_mysql');
+define('DB_CHAR_CONFIG', 'utf8');

@@ -6,7 +6,7 @@ use Particle\Core;
 
 class ___SAMPLE___Addons extends Core\Controller
 {
-    private $_viewAddons;
+    private $viewAddons;
 
     public function __construct()
     {
@@ -16,7 +16,7 @@ class ___SAMPLE___Addons extends Core\Controller
 
         Core\App::getInstance()->setAppCurrentAddons($nameAddons);
 
-        $this->_viewAddons = parent::loadViewAddons();
+        $this->viewAddons = parent::loadViewAddons();
 
         /* end setting addons*/
     }

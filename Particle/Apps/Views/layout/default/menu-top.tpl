@@ -1,8 +1,5 @@
 {config_load file='default.conf'}{strip}
 
-
-
-
     <div class="sidebar" data-color="blue">
 
       <div class="sidebar-wrapper">
