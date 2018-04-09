@@ -6,4 +6,4 @@
 require_once '../../../config.php';
 
 // Autoload
-require_once PARTICLE_PATH_CORE.'autoload.php';
+require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload.php';
