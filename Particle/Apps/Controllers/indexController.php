@@ -13,6 +13,6 @@ class indexController extends Core\Controller
 
     public function index()
     {
-        $this->_view->show(false, false, false, 'full', true);
+        $this->view->show(false, false, false, 'full', true);
     }
 }
