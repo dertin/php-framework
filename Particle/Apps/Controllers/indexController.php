@@ -13,13 +13,9 @@ class indexController extends Core\Controller
 
     public function index()
     {
-        $spot = parent::$spotInstance;
-
-        $aTest = \Particle\Apps\Entities\Person::fields();
-        var_dump($aTest);
-
-        $personMapper = $spot->mapper('\Particle\Apps\Entities\Person');
+        $personMapper = $this->spot->mapper('\Particle\Apps\Entities\Person');
         $personMapper->migrate();
+
         $this->view->show();
     }
 }

@@ -17,7 +17,7 @@ abstract class Controller extends Core\SpotLoad
 {
     protected $view = null;
     protected $args = null;
-    protected static $spotInstance = null;
+    protected $spot = null;
 
     private static $currentAddons;
     private static $controller;
@@ -25,15 +25,15 @@ abstract class Controller extends Core\SpotLoad
 
     public function __construct()
     {
-        parent::__construct();
-        self::$spotInstance = parent::$spotInstance;
+        parent::__construct(); // init $spotInstance
+        $this->spot = parent::$spotInstance;
+
         self::$controller = Core\App::getInstance()->getAppController();
         self::$method = Core\App::getInstance()->getAppMethod();
 
         $this->args = Core\App::getInstance()->getAppArgs();
 
         $cacheKey = Core\App::getInstance()->getAppRequest(); // $cacheKey
-
         $this->view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
     }
 

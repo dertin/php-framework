@@ -10,18 +10,18 @@ class Person extends \Spot\Entity
     public static function fields()
     {
         return [
-            'UserId'      => ['type' => 'integer', 'autoincrement' => true, 'primary' => true],
-            'UserMail'    => ['type' => 'string', 'required' => true],
-            'UserName'    => ['type' => 'string', 'required' => true],
-            'UserBirthday'=> ['type' => 'datetime','required' => true],
-            'UserCountry' => ['type' => 'string', 'required' => true],
+            'PersonId'      => ['type' => 'integer', 'autoincrement' => true, 'primary' => true],
+            'PersonMail'    => ['type' => 'string', 'required' => true],
+            'PersonName'    => ['type' => 'string', 'required' => true],
+            'PersonBirthday'=> ['type' => 'datetime','required' => true],
+            'PersonCountry' => ['type' => 'string', 'required' => true],
         ];
     }
 
-    // public static function relations(Mapper $mapper, Entity $entity)
-    // {
-    //     return [
-    //         'books' => $mapper->HasMany($entity, '\Particle\Apps\Entities\Books', 'BookId'),
-    //     ];
-    // }
+    public static function relations(Mapper $mapper, Entity $entity)
+    {
+        return [
+            'books' => $mapper->hasMany($entity, 'Particle\Apps\Entities\Books', 'BookId'),
+        ];
+    }
 }

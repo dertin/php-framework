@@ -21,7 +21,7 @@ class Books extends \Spot\Entity
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'belogns' => $mapper->BelongsTo($entity, '\Particle\Apps\Entities\Person', 'PersonId'),
+            'person' => $mapper->belongsTo($entity, 'Particle\Apps\Entities\Person', 'PersonId'),
         ];
     }
 }
