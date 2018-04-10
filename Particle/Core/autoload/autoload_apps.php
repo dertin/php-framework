@@ -18,7 +18,7 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
         $nameClass = substr($ClassNameWithNameSpace, strlen($namespace));
 
         $filePath = PARTICLE_PATH_APPS.'Entities'.DS.$nameClass.'.php';
-
+        echo $filePath;
         if (!is_readable($filePath)) {
             foreach (glob(PARTICLE_PATH_APPS.'Entities'.DS.'*', GLOB_ONLYDIR) as $dir) {
                 $subDir= basename($dir);
@@ -29,7 +29,6 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
                 }
             }
         } else {
-            echo $filePath;
             require_once $filePath;
         }
     }
