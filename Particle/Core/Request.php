@@ -272,8 +272,9 @@ final class Request
 
                 // The first position is empty. It is eliminated
                 array_filter($requestExplode);
-                
+
                 $this->controller = strtolower(array_shift($requestExplode));
+                echo 'Controller:' . $this->controller;
                 $this->method = strtolower(array_shift($requestExplode));
                 $this->args = Core\Security::filterAlphaNum($requestExplode);
             }
