@@ -24,14 +24,4 @@ class Person extends \Spot\Entity
             'books' => $mapper->HasMany($entity, 'Particle\Apps\Entities\Books', 'BookId'),
         ];
     }
-
-    public static function events(EventEmitter $eventEmitter)
-    {
-        $eventEmitter->on('beforeSave', function (Entity $entity, Mapper $mapper) {
-            if ($entity->UserCountry == 0) {
-                throw new \Exception("Edad debe ser mayor a 0");
-                return false;
-            }
-        });
-    }
 }

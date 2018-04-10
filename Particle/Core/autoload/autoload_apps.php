@@ -12,13 +12,11 @@ if (!defined('PARTICLE_PATH_APPS')) {
 spl_autoload_register(function ($ClassNameWithNameSpace) {
     $namespace = 'Particle\Apps\Entities\\';
 
-
-
     if (substr($ClassNameWithNameSpace, 0, strlen($namespace)) === $namespace) {
         $nameClass = substr($ClassNameWithNameSpace, strlen($namespace));
 
         $filePath = PARTICLE_PATH_APPS.'Entities'.DS.$nameClass.'.php';
-        echo $filePath;
+        
         if (!is_readable($filePath)) {
             foreach (glob(PARTICLE_PATH_APPS.'Entities'.DS.'*', GLOB_ONLYDIR) as $dir) {
                 $subDir= basename($dir);
@@ -39,13 +37,13 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
  * Autoload de Controllers
  */
 spl_autoload_register(function ($ClassNameWithNameSpace) {
-    $namespace = 'Particle\Apps\Controllers';
+    $namespace = 'Particle\Apps\Controllers\\';
 
     if (substr($ClassNameWithNameSpace, 0, strlen($namespace)) === $namespace) {
         $nameClass = substr($ClassNameWithNameSpace, strlen($namespace));
 
         $filePath = PARTICLE_PATH_APPS.'Controllers'.DS.$nameClass.'.php';
-        echo $filePath;
+
         if (!is_readable($filePath)) {
             foreach (glob(PARTICLE_PATH_APPS.'Controllers'.DS.'*', GLOB_ONLYDIR) as $dir) {
                 $subDir= basename($dir);
