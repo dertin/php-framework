@@ -2,7 +2,7 @@
 
 namespace Particle\Apps\Entities;
 
-class Person extends Spot\Entity
+class Person extends \Spot\Entity
 {
     protected static $table = 'person';
     protected static $mapper = 'Entities\Mapper\person';
@@ -21,7 +21,7 @@ class Person extends Spot\Entity
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'books' => $mapper->HasMany($entity, 'Entity\Books', 'BookId'),
+            'books' => $mapper->HasMany($entity, 'Entities\Books', 'BookId'),
         ];
     }
 }
