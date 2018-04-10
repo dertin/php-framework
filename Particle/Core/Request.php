@@ -271,7 +271,7 @@ final class Request
                 $requestExplode = explode('/', $requestTemp);
 
                 // The first position is empty. It is eliminated
-                array_filter($requestExplode);
+                unset($requestExplode[0]);
 
                 $this->controller = strtolower(array_shift($requestExplode));
                 echo 'Controller:' . $this->controller;
