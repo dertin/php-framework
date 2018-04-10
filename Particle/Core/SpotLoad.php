@@ -19,7 +19,7 @@ abstract class SpotLoad
 
     public function __construct()
     {
-        if (!isset($spotInstance) || !($spotInstance instanceof Spot\Locator)) {
+        if (!isset(self::$spotInstance) || !(self::$spotInstance instanceof Spot\Locator)) {
             $cfg = new \Spot\Config();
 
             $cfg->addConnection(DB_TYPE_CONFIG, [
@@ -30,7 +30,7 @@ abstract class SpotLoad
               'driver' => DB_DRIVER_CONFIG,
             ]);
 
-            $spotInstance = new \Spot\Locator($cfg);
+            self::$spotInstance = new \Spot\Locator($cfg);
         }
     }
 }
