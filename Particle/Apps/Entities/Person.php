@@ -1,12 +1,8 @@
 <?php
 
-// namespace Entity;
-//
-// use Spot\EntityInterface as Entity;
-// use Spot\MapperInterface as Mapper;
-// use Spot\EventEmitter;
+namespace Particle\Apps\Entities;
 
-class Person extends Core\Model
+class Person extends Spot\Entity
 {
     protected static $table = 'person';
     protected static $mapper = 'Entities\Mapper\person';
@@ -14,9 +10,9 @@ class Person extends Core\Model
     public static function fields()
     {
         return [
-            'UserId'       => ['type' => 'integer', 'autoincrement' => true, 'primary' => true],
-            'USerMail'   => ['type' => 'string', 'required' => true],
-            'UserName' => ['type' => 'string', 'required' => true],
+            'UserId'      => ['type' => 'integer', 'autoincrement' => true, 'primary' => true],
+            'UserMail'    => ['type' => 'string', 'required' => true],
+            'UserName'    => ['type' => 'string', 'required' => true],
             'UserBirthday'=> ['type' => 'datetime','required' => true],
             'UserCountry' => ['type' => 'string', 'required' => true],
         ];
@@ -25,8 +21,7 @@ class Person extends Core\Model
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'books' => $mapper->HasMany($entity, 'Entity\books', 'BookId'),
+            'books' => $mapper->HasMany($entity, 'Entity\Books', 'BookId'),
         ];
     }
-
 }

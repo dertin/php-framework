@@ -1,12 +1,8 @@
 <?php
 
-// namespace Entity;
-//
-// use Spot\EntityInterface as Entity;
-// use Spot\MapperInterface as Mapper;
-// use Spot\EventEmitter;
+namespace Particle\Apps\Entities;
 
-class Books extends Core\SpotLoad
+class Books extends \Spot\Entity
 {
     protected static $table = 'books';
 
@@ -25,8 +21,7 @@ class Books extends Core\SpotLoad
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'belogns' => $mapper->BelongsTo($entity, 'Person', 'PersonId'),
+            'belogns' => $mapper->BelongsTo($entity, 'Entity/Person', 'PersonId'),
         ];
     }
-
 }
