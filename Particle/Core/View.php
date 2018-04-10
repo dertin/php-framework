@@ -85,7 +85,7 @@ final class View extends \Smarty
         self::$sCurrAssetName = 'default';
     }
 
-    public function show($view = false, $customController = false, $return = false, $typereturn = false, $backend = false)
+    public function show($view = false, $customController = false, $return = false, $typereturn = false, $customLayout = false)
     {
         if (!isset($view) || !is_string($view)) {
             if (self::$isAddons) {
@@ -158,21 +158,21 @@ final class View extends \Smarty
 
         $pathView = $absoluteView.DS.$view.'.tpl';
 
-        if ($backend === true) {
-            // layout backend
-            $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layoutadmin/';
-            $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layoutadmin/';
-            $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layoutadmin'.DS;
-        } elseif ($backend == 'layoutprov') {
-            // layout frontend proveedor area privada
-            $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layoutprov/';
-            $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layoutprov/';
-            $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layoutprov'.DS;
+        if (!empty($customLayout)) {
+            // custom layout
+            $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layout/'.$customLayout;
+            $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layout/'.$customLayout;
+            $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.$customLayout.DS;
         } else {
             // layout frontend
             $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layout/'.DEFAULT_LAYOUT;
             $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layout/'.DEFAULT_LAYOUT;
             $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS;
+        }
+
+        if (!is_dir($pathLayoutFile)) {
+            Core\Debug::savelogfile(2, 'Error View Layout', 'The layout directory was not found');
+            throw new \Exception('Error: The layout directory was not found');
         }
 
         $_params = array(
@@ -197,11 +197,6 @@ final class View extends \Smarty
             'absolute_view' => $absoluteView,
             'url_controller' => HOME_URL.$viewController,
         );
-
-        /*echo "<pre>";
-        print_r($pathView);
-        echo "</pre>";
-        exit();*/
 
         if (is_readable($pathView)) {
             $this->setTemplateDir($pathLayoutFile);
