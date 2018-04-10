@@ -6,7 +6,7 @@
 // use Spot\MapperInterface as Mapper;
 // use Spot\EventEmitter;
 
-class Books extends Core\Model
+class Books extends Core\SpotLoad
 {
     protected static $table = 'books';
 
@@ -25,7 +25,7 @@ class Books extends Core\Model
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'belogns' => $mapper->BelongsTo($entity, 'Entity\Person', 'PersonId'),
+            'belogns' => $mapper->BelongsTo($entity, 'Person', 'PersonId'),
         ];
     }
 
