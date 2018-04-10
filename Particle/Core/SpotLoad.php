@@ -30,7 +30,7 @@ abstract class SpotLoad
               'driver' => DB_DRIVER_CONFIG,
             ]);
 
-            $spotInstance = new Spot\Locator($cfg);
+            $spotInstance = new \Spot\Locator($cfg);
         }
     }
 }
