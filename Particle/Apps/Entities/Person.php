@@ -18,10 +18,10 @@ class Person extends \Spot\Entity
         ];
     }
 
-    public static function relations(Mapper $mapper, Entity $entity)
-    {
-        return [
-            'books' => $mapper->HasMany($entity, '\Particle\Apps\Entities\Books', 'BookId'),
-        ];
-    }
+    // public static function relations(Mapper $mapper, Entity $entity)
+    // {
+    //     return [
+    //         'books' => $mapper->HasMany($entity, '\Particle\Apps\Entities\Books', 'BookId'),
+    //     ];
+    // }
 }
