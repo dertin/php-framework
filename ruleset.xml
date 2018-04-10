@@ -11,4 +11,7 @@
     <message>Line longer than %s characters; contains %s characters</message>
     <severity>0</severity>
   </rule>
+  <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
+    <severity>0</severity>
+  </rule>
 </ruleset>
