@@ -2,6 +2,9 @@
 
 namespace Particle\Apps\Entities;
 
+use Spot\EntityInterface as Entity;
+use Spot\MapperInterface as Mapper;
+
 class Books extends \Spot\Entity
 {
     protected static $table = 'books';
@@ -18,7 +21,7 @@ class Books extends \Spot\Entity
         ];
     }
 
-    public static function relations($mapper, $entity)
+    public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
             'person' => $mapper->belongsTo($entity, 'Particle\Apps\Entities\Person', 'PersonId'),
