@@ -12,7 +12,7 @@ if (!defined('PARTICLE_PATH_APPS')) {
 spl_autoload_register(function ($ClassNameWithNameSpace) {
     $namespace = 'Particle\Apps\Entities';
 
-    echo $ClassNameWithNameSpace.'<br>';
+
 
     if (substr($ClassNameWithNameSpace, 0, strlen($namespace)) === $namespace) {
         $nameClass = substr($ClassNameWithNameSpace, strlen($namespace));
@@ -29,6 +29,7 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
                 }
             }
         } else {
+            echo $filePath;
             require_once $filePath;
         }
     }
