@@ -15,7 +15,7 @@ class indexController extends Core\Controller
     {
         $spot = parent::$spotInstance;
 
-        $aTest = Particle\Apps\Entities\Person::fields();
+        $aTest = \Particle\Apps\Entities\Person::fields();
         var_dump($aTest);
 
         $personMapper = $spot->mapper('Particle\Apps\Entities\Person');
