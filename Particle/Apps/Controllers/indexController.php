@@ -18,7 +18,7 @@ class indexController extends Core\Controller
         $aTest = \Particle\Apps\Entities\Person::fields();
         var_dump($aTest);
 
-        $personMapper = $spot->mapper('Particle\Apps\Entities\Person');
+        $personMapper = $spot->mapper('\Particle\Apps\Entities\Person');
         $personMapper->migrate();
         $this->view->show();
     }
