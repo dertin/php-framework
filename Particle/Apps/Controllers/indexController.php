@@ -1,6 +1,6 @@
 <?php
 
-namespace Particle\Apps;
+namespace Particle\Apps\Controllers;
 
 use Particle\Core;
 
