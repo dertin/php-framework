@@ -17,6 +17,7 @@ abstract class Controller extends Core\SpotLoad
 {
     protected $view = null;
     protected $args = null;
+    protected static $spotInstance = null;
 
     private static $currentAddons;
     private static $controller;
@@ -24,6 +25,8 @@ abstract class Controller extends Core\SpotLoad
 
     public function __construct()
     {
+        parent::__construct();
+        self::$spotInstance = parent::$spotInstance;
         self::$controller = Core\App::getInstance()->getAppController();
         self::$method = Core\App::getInstance()->getAppMethod();
 
