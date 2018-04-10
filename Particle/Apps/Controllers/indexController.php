@@ -3,7 +3,6 @@
 namespace Particle\Apps\Controllers;
 
 use Particle\Core;
-use Particle\Apps\Entities;
 
 class indexController extends Core\Controller
 {
@@ -15,6 +14,10 @@ class indexController extends Core\Controller
     public function index()
     {
         $spot = parent::$spotInstance;
+
+        $aTest = Particle\Apps\Entities\Person::fields();
+        var_dump($aTest);
+
         $personMapper = $spot->mapper('Particle\Apps\Entities\Person');
         $personMapper->migrate();
         $this->view->show();
