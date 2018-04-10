@@ -1,6 +1,6 @@
 <?php
 
-/* CORE CONFIG */
+/* COR CONFIG */
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', realpath(dirname(__FILE__)).DS);
 define('FRAMEWORK_FOLDER', 'Particle');
@@ -31,4 +31,9 @@ define('APPS_SETTINGS_PATH', PARTICLE_PATH_APPS.'Settings'.DS);
 
 // Load configs Apps
 require_once APPS_SETTINGS_PATH.'global.inc.php';
-require_once APPS_SETTINGS_PATH.'database.inc.php';
+
+if (file_exists(APPS_SETTINGS_PATH.'database.inc.test.php')) {
+    require_once APPS_SETTINGS_PATH.'database.inc.test.php'; // only for secret tests
+} else {
+    require_once APPS_SETTINGS_PATH.'database.inc.php';
+}

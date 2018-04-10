@@ -274,7 +274,7 @@ final class Request
                 unset($requestExplode[0]);
 
                 $this->controller = strtolower(array_shift($requestExplode));
-                echo 'Controller:' . $this->controller;
+                
                 $this->method = strtolower(array_shift($requestExplode));
                 $this->args = Core\Security::filterAlphaNum($requestExplode);
             }
