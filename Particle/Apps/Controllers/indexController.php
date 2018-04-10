@@ -13,7 +13,7 @@ class indexController extends Core\Controller
 
     public function index()
     {
-        $spot = $this::spotInstance;
+        $spot = $this::$spotInstance;
         $personMapper = $spot->mapper('Entities/Person');
         $personMapper->migrate();
         $this->view->show();
