@@ -19,7 +19,7 @@ abstract class SpotLoad
 
     public function __construct()
     {
-        if (!isset(self::$spotInstance) || !(self::$spotInstance instanceof Spot\Locator)) {
+        if (!isset(self::$spotInstance) || !(self::$spotInstance instanceof \Spot\Locator)) {
             $cfg = new \Spot\Config();
 
             $cfg->addConnection(DB_TYPE_CONFIG, [

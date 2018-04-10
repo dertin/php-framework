@@ -5,7 +5,7 @@ namespace Particle\Apps\Entities;
 class Person extends \Spot\Entity
 {
     protected static $table = 'person';
-    protected static $mapper = 'Entities\Mapper\person';
+    // protected static $mapper = 'Entities\Mapper\person';
 
     public static function fields()
     {
@@ -21,7 +21,7 @@ class Person extends \Spot\Entity
     public static function relations(Mapper $mapper, Entity $entity)
     {
         return [
-            'books' => $mapper->HasMany($entity, 'Entities\Books', 'BookId'),
+            'books' => $mapper->HasMany($entity, 'Particle\Apps\Entities\Books', 'BookId'),
         ];
     }
 }
