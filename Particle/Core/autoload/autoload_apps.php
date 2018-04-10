@@ -10,7 +10,7 @@ if (!defined('PARTICLE_PATH_APPS')) {
  * Autoload de Entidades de base de datos con Spot ORM
  */
 spl_autoload_register(function ($ClassNameWithNameSpace) {
-    $namespace = 'Particle\Apps\Entities';
+    $namespace = 'Particle\Apps\Entities\\';
 
 
 
@@ -45,7 +45,7 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
         $nameClass = substr($ClassNameWithNameSpace, strlen($namespace));
 
         $filePath = PARTICLE_PATH_APPS.'Controllers'.DS.$nameClass.'.php';
-
+        echo $filePath;
         if (!is_readable($filePath)) {
             foreach (glob(PARTICLE_PATH_APPS.'Controllers'.DS.'*', GLOB_ONLYDIR) as $dir) {
                 $subDir= basename($dir);
