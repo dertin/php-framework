@@ -20,7 +20,7 @@ At the moment, you can test it in a test environment and see how it works.
 4. Set the permissions of files and directories, as necessary </br>
     $ sudo find . -type d -exec chmod 755 {} \\;</br>
     $ sudo find . -type f -exec chmod 644 {} \\;</br>
-    $ sudo chmod 770 error.log && sudo chmod -R 770 Particle/Core/tmp
+    $ sudo chmod 660 error.log && sudo chmod -R 770 Particle/Core/tmp
 
 5. Edit the following configuration files:
 
