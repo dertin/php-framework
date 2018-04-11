@@ -5,5 +5,10 @@
   <span> {$person->PersonName}</span>
   </br>
 {/foreach}
+{foreach $books as $book}
+  <span> {$book->BookId}</span>
+  <span> {$book->BookTitle}</span>
+  </br>
+{/foreach}
 {* <span>{$PersonName}</span> *}
 {/strip}

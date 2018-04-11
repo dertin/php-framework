@@ -32,6 +32,7 @@ class indexController extends Core\Controller
                     'BookEdition' => 1,
         ]);
 
+        $books = $bookMapper->all();
         // $newBook->relation('person', $person);
         // $bookMapper->save($newBook, ['relations' => true]);
 
@@ -59,7 +60,7 @@ class indexController extends Core\Controller
         // }
         // $nameP = $personMapper->first(['PersonName' => 'Mateo Mujica'])->PersonName;
         // $this->view->assign('PersonName', $nameP);
-
+        $this->view->assign('books', $books);
         $this->view->assign('people', $people);
         $this->view->show();
     }
