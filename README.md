@@ -25,8 +25,8 @@ At the moment, you can test it in a test environment and see how it works.
 5. Edit the following configuration files:
 
     * [Configuration of the main database]
-    - Particle/Apps/Settings/database.inc.php</br>
-
+    - Particle/Apps/Settings/database.inc.php
+    </br>
     * [General configuration of the application, you can also add your own constants]
     - Particle/Apps/Settings/global.inc.php
 
@@ -53,7 +53,7 @@ At the moment, you can test it in a test environment and see how it works.
 
     * Install Application dependencies
     - $ sudo cd Particle/Apps && composer install
-    -
+
     * Install Framework dependencies
     - $ sudo cd Particle/Core && composer install
 
