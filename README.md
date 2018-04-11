@@ -13,8 +13,8 @@ At the moment, you can test it in a test environment and see how it works.
 1. Go to the folder of your web server
     $ cd /var/www/htdocs
 
-2. Download the latest version of the framework and unzip it to the root directory of your web server
-    $ sudo wget https://codeload.github.com/dertin/framework-php/tar.gz/master -O framework-php.tar.gz
+2. Download the latest version of the framework and unzip it to the root directory of your web server </br>
+    $ sudo wget https://codeload.github.com/dertin/framework-php/tar.gz/master -O framework-php.tar.gz </br>
     $ sudo tar -xvzf framework-php.tar.gz --strip 1 && rm framework-php.tar.gz
 
 4. Set the permissions of files and directories, as necessary </br>
@@ -25,10 +25,10 @@ At the moment, you can test it in a test environment and see how it works.
 5. Edit the following configuration files:
 
     * [Configuration of the main database]
-    * Particle/Apps/Settings/database.inc.php
+    - Particle/Apps/Settings/database.inc.php
 
     * [General configuration of the application, you can also add your own constants]
-    * Particle/Apps/Settings/global.inc.php
+    - Particle/Apps/Settings/global.inc.php
 
 6. Web server configuration
 
