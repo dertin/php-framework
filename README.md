@@ -17,7 +17,7 @@ At the moment, you can test it in a test environment and see how it works.
     $ sudo wget https://codeload.github.com/dertin/framework-php/tar.gz/master -O framework-php.tar.gz
     $ sudo tar -xvzf framework-php.tar.gz --strip 1 && rm framework-php.tar.gz
 
-4. Set the permissions of files and directories, as necessary
+4. Set the permissions of files and directories, as necessary </br>
     $ sudo find . -type d -exec chmod 755 {} \;</br>
     $ sudo find . -type f -exec chmod 644 {} \;</br>
     $ sudo chmod 770 error.log && sudo chmod -R 770 Particle/Core/tmp
@@ -25,7 +25,8 @@ At the moment, you can test it in a test environment and see how it works.
 5. Edit the following configuration files:
 
     * [Configuration of the main database]
-    * Particle/Apps/Settings/database.inc.php</br>
+    * Particle/Apps/Settings/database.inc.php
+
     * [General configuration of the application, you can also add your own constants]
     * Particle/Apps/Settings/global.inc.php
 
