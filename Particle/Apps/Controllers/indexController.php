@@ -23,14 +23,15 @@ class indexController extends Core\Controller
         $date = new \DateTime($sBirthday);
         $people = $personMapper->all();
 
-        // $person = $personMapper->first();
-        // $newBook = $bookMapper->create([
-        //             'BookTitle' => 'Harry Potter',
-        //             'BookAuthor' => 'Guillermo Cespedes',
-        //             'BookDatePublished' => $date,
-        //             'BookEdition' => 1,
-        // ]);
-        //
+        $person = $personMapper->first();
+        $newBook = $bookMapper->create([
+                    'PersonId' => $person->PersonName,
+                    'BookTitle' => 'Harry Potter',
+                    'BookAuthor' => 'Guillermo Cespedes',
+                    'BookDatePublished' => $date,
+                    'BookEdition' => 1,
+        ]);
+
         // $newBook->relation('person', $person);
         // $bookMapper->save($newBook, ['relations' => true]);
 
