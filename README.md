@@ -40,16 +40,16 @@ At the moment, you can test it in a test environment and see how it works.
 
 
     ```
-    location ~ /.php$ { </br>
-  		include /etc/nginx/fastcgi.conf; </br>
-  		fastcgi_pass 127.0.0.1:9007; </br>
-  	} </br>
+    location ~ /.php$ {   
+  		include /etc/nginx/fastcgi.conf;   
+  		fastcgi_pass 127.0.0.1:9007;  
+  	}  
 
-  	location / { </br>
-      if (!-e $request_filename){ </br>
-          rewrite ^(.+)$ /load.php?request=$1; </br>
-      } </br>
-    }
+  	location / {  
+      if (!-e $request_filename){  
+          rewrite ^(.+)$ /load.php?request=$1;  
+      }  
+    }  
     ```
 
 7. Install Composer (https://getcomposer.org/)
