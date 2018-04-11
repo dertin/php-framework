@@ -28,7 +28,7 @@ At the moment, you can test it in a test environment and see how it works.
         1. Particle/Apps/Settings/database.inc.php
 
     2.  [General configuration of the application, you can also add your own constants]
-      1. Particle/Apps/Settings/global.inc.php
+        1. Particle/Apps/Settings/global.inc.php
 
 6. Web server configuration
 
@@ -52,10 +52,10 @@ At the moment, you can test it in a test environment and see how it works.
 7. Install Composer (https://getcomposer.org/)
 
     * Install Application dependencies
-    - $ sudo cd Particle/Apps && composer install
+    + $ sudo cd Particle/Apps && composer install
 
     * Install Framework dependencies
-    - $ sudo cd Particle/Core && composer install
+    + $ sudo cd Particle/Core && composer install
 
 8. Ready. Now just visit yourwebsite.com to verify if everything is working correctly.
 
