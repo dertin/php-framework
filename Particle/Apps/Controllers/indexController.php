@@ -34,6 +34,7 @@ class indexController extends Core\Controller
         $newBook->relation('person', $person);
         $bookMapper->save($newBook, ['relations' => true]);
 
+
         // $autoNew = $autoMapper->build(['marcaAuto' => 'Bugatti',
         //                                'matriculaAuto' => 123456,
         //                               ]);
