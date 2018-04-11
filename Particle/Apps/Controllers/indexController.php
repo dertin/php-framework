@@ -19,7 +19,8 @@ class indexController extends Core\Controller
         $bookMapper = $this->spot->mapper('Particle\Apps\Entities\Books');
         $bookMapper->migrate();
 
-        $date = new \DateTime();
+        $sBirthday = '1995-02-24';
+        $date = new \DateTime($sBirthday);
         $newPerson = $personMapper->build([
                    'PersonMail' => 'mateomu18@gmail.com',
                    'PersonName' => 'Mateo Mujica',
