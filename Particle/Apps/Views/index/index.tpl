@@ -10,5 +10,7 @@
   <span> {$book->BookTitle}</span>
   </br>
 {/foreach}
+<br>
+<span>{$ResultDelete}</span>
 {* <span>{$PersonName}</span> *}
 {/strip}
