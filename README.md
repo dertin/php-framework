@@ -18,8 +18,8 @@ At the moment, you can test it in a test environment and see how it works.
     $ sudo tar -xvzf framework-php.tar.gz --strip 1 && rm framework-php.tar.gz
 
 4. Set the permissions of files and directories, as necessary </br>
-    $ sudo find . -type d -exec chmod 755 {} \/;</br>
-    $ sudo find . -type f -exec chmod 644 {} \/;</br>
+    $ sudo find . -type d -exec chmod 755 {} \\;</br>
+    $ sudo find . -type f -exec chmod 644 {} \\;</br>
     $ sudo chmod 770 error.log && sudo chmod -R 770 Particle/Core/tmp
 
 5. Edit the following configuration files:
@@ -38,16 +38,19 @@ At the moment, you can test it in a test environment and see how it works.
 
   - Configuration example:
 
-    location ~ \/.php$ { </br>
-  		include /etc/nginx/fastcgi.conf; </br>
-  		fastcgi_pass 127.0.0.1:9007;
-  	}
 
-  	location / {
-      if (!-e $request_filename){
-          rewrite ^(.+)$ /load.php?request=$1;
-      }
+    ```
+    location ~ /.php$ { </br>
+  		include /etc/nginx/fastcgi.conf; </br>
+  		fastcgi_pass 127.0.0.1:9007; </br>
+  	} </br>
+
+  	location / { </br>
+      if (!-e $request_filename){ </br>
+          rewrite ^(.+)$ /load.php?request=$1; </br>
+      } </br>
     }
+    ```
 
 7. Install Composer (https://getcomposer.org/)
 
