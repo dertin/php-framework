@@ -4,6 +4,7 @@ namespace Particle\Apps\Entities;
 
 use Spot\EntityInterface as Entity;
 use Spot\MapperInterface as Mapper;
+use Spot\EventEmitter;
 
 class Books extends \Spot\Entity
 {
