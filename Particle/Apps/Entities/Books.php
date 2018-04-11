@@ -17,7 +17,7 @@ class Books extends \Spot\Entity
             'BookTitle'   => ['type' => 'string', 'required' => true],
             'BookAuthor' => ['type' => 'string', 'required' => true],
             'BookDatePublished'=> ['type' => 'datetime','required' => true],
-            'BookEdition' => ['type' => 'string', 'required' => true],
+            'BookEdition' => ['type' => 'integer', 'required' => true],
         ];
     }
 

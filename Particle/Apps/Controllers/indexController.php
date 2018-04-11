@@ -21,6 +21,29 @@ class indexController extends Core\Controller
 
         $sBirthday = '1995-02-24';
         $date = new \DateTime($sBirthday);
+        $people = $personMapper->all();
+
+        $person = $personMapper->first();
+        $newBook = $bookMapper->create([
+                    'BookTitle' => 'Harry Potter',
+                    'BookAuthor' => 'Guillermo Cespedes',
+                    'BookDatePublished' => $date,
+                    'BookEdition' => 1,
+        ]);
+
+        $newBook->relation('person', $person);
+        $bookMapper->save($newBook, ['relations' => true]);
+
+        // $autoNew = $autoMapper->build(['marcaAuto' => 'Bugatti',
+        //                                'matriculaAuto' => 123456,
+        //                               ]);
+        // $persona = new \Entity\Persona(['nombrePersona' => 'Teo Muj',
+        //                                 'edadPersona' => 25,
+        //                                 'fechaNacPersona' => $date,
+        //                                 'telefonoPersona' => '099123456']);
+        // $autoNew->relation('duenio', $persona);
+        // $autoMapper->save($autoNew, ['relations' => true]);
+
         // $newPerson = $personMapper->build([
         //            'PersonMail' => 'mateomu18@gmail.com',
         //            'PersonName' => 'Mateo Mujica',
@@ -34,7 +57,7 @@ class indexController extends Core\Controller
         // }
         // $nameP = $personMapper->first(['PersonName' => 'Mateo Mujica'])->PersonName;
         // $this->view->assign('PersonName', $nameP);
-        $people = $personMapper->all();
+
         $this->view->assign('people', $people);
         $this->view->show();
     }
