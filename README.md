@@ -2,7 +2,7 @@
 
 Currently in development, we hope to publish a stable version and its documentation soon.
 
-The project was initially called "PHP Framework Partirle". The idea is to find a better name in the future.
+The project was initially called "PHP Framework Particle". The idea is to find a better name in the future.
 
 If you have questions or discover something to improve or change, please contact us at https://github.com/dertin/framework-php/issues
 
@@ -18,17 +18,16 @@ At the moment, you can test it in a test environment and see how it works.
     $ sudo tar -xvzf framework-php.tar.gz --strip 1 && rm framework-php.tar.gz
 
 4. Set the permissions of files and directories, as necessary
-    $ sudo find . -type d -exec chmod 755 {} \;
-    $ sudo find . -type f -exec chmod 644 {} \;
+    $ sudo find . -type d -exec chmod 755 {} \;</br>
+    $ sudo find . -type f -exec chmod 644 {} \;</br>
     $ sudo chmod 770 error.log && sudo chmod -R 770 Particle/Core/tmp
 
 5. Edit the following configuration files:
 
     * [Configuration of the main database]
-    - Particle/Apps/Settings/database.inc.php
-    -
+    * Particle/Apps/Settings/database.inc.php</br>
     * [General configuration of the application, you can also add your own constants]
-    - Particle/Apps/Settings/global.inc.php
+    * Particle/Apps/Settings/global.inc.php
 
 6. Web server configuration
 
