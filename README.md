@@ -24,11 +24,11 @@ At the moment, you can test it in a test environment and see how it works.
 
 5. Edit the following configuration files:
 
-    * [Configuration of the main database]
-    - Particle/Apps/Settings/database.inc.php
-    </br>
-    * [General configuration of the application, you can also add your own constants]
-    - Particle/Apps/Settings/global.inc.php
+    1. [Configuration of the main database]
+        1. Particle/Apps/Settings/database.inc.php
+
+    2.  [General configuration of the application, you can also add your own constants]
+      1. Particle/Apps/Settings/global.inc.php
 
 6. Web server configuration
 
