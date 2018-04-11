@@ -18,6 +18,7 @@ At the moment, you can test it in a test environment and see how it works.
     $ sudo tar -xvzf framework-php.tar.gz --strip 1 && rm framework-php.tar.gz
 
 4. Set the permissions of files and directories, as necessary </br>
+    $ sudo chown -R root:www-data. </br>
     $ sudo find . -type d -exec chmod 755 {} \\;</br>
     $ sudo find . -type f -exec chmod 644 {} \\;</br>
     $ sudo chmod 660 error.log && sudo chmod -R 770 Particle/Core/tmp
