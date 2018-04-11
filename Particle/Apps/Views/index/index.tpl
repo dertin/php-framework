@@ -12,5 +12,7 @@
 {/foreach}
 <br>
 <span>{$ResultDelete}</span>
+<br>
+<span>{$TitleUpd}</span>
 {* <span>{$PersonName}</span> *}
 {/strip}
