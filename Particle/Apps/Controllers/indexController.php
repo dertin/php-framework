@@ -25,7 +25,7 @@ class indexController extends Core\Controller
 
         $person = $personMapper->first();
         $newBook = $bookMapper->create([
-                    'PersonId' => $person->PersonId,
+                    'PersonId' => 0,
                     'BookTitle' => 'Harry Potter',
                     'BookAuthor' => 'Guillermo Cespedes',
                     'BookDatePublished' => $date,

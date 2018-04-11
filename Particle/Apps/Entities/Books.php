@@ -27,4 +27,15 @@ class Books extends \Spot\Entity
             'person' => $mapper->belongsTo($entity, 'Particle\Apps\Entities\Person', 'PersonId'),
         ];
     }
+
+    public static function events(EventEmitter $eventEmitter)
+    {
+        $eventEmitter->on('beforeSave', function (Entity $entity, Mapper $mapper) {
+            if ($entity->PersonId <= 0) {
+                throw new \Exception("El id de la persona debe relacionarse con las de
+                                        la tabla persona");
+                return false;
+            }
+        });
+    }
 }
