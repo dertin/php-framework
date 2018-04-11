@@ -32,7 +32,8 @@ class indexController extends Core\Controller
             echo "No insert";
             return false;
         }
-        $this->view->assign('PersonName', $personMapper->first(['PersonName' => 'Mateo Mujica'])->PersonName);
+        $nameP = $personMapper->first(['PersonName' => 'Mateo Mujica'])->PersonName;
+        $this->view->assign('PersonName', $nameP);
         $this->view->show();
     }
 }
