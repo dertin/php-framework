@@ -26,9 +26,6 @@ class indexController extends Core\Controller
         $people = $personMapper->all();
         $books = $bookMapper->all();
 
-        $person = $personMapper->first(['PersonName' => 'Teo Muj']);
-        $booksP = $person->books;
-        $this->view->assign('booksP', $booksP);
 
         /* Create enetity (Person) */
         // $person = $personMapper->first();
@@ -70,6 +67,9 @@ class indexController extends Core\Controller
         // $bookMapper->save($newBook);
         // $person->relation('books', $newBook);
         // $personMapper->save($person, ['relations' => true]);
+        // $booksP = $person->books;
+        // $this->view->assign('booksP', $booksP);
+
 
         /* Events (if personId <= 0 exception)*/
         // $person = $personMapper->create(['PersonId' => 0,

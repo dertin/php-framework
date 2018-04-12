@@ -10,10 +10,10 @@
   <span> {$book->BookTitle}</span>
   </br>
 {/foreach}
-{foreach $booksP as $bookP}
+{* {foreach $booksP as $bookP}
   <span> {$bookP->BookTitle}</span>
   </br>
-{/foreach}
+{/foreach} *}
 {* <br>
 <span>{$ResultDelete}</span>
 <br>
