@@ -78,6 +78,9 @@ class indexController extends Core\Controller
         //                                 'PersonBirthday' => $date,
         //                                 'PersonCountry' => 'Uruguay']);
 
+        /* Custom Mapper */
+        $owners1stEditionBooks = $personMapper->libros1eraEdicion();
+        $this->view->assign('owners1stEditionBooks', $owners1stEditionBooks);
 
         $this->view->assign('books', $books);
         $this->view->assign('people', $people);

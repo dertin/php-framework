@@ -10,6 +10,10 @@
   <span> {$book->BookTitle}</span>
   </br>
 {/foreach}
+{foreach $owners1stEditionBooks as $owners}
+  <span> {$owners->PersonName}</span>
+  </br>
+{/foreach}
 {* {foreach $booksP as $bookP}
   <span> {$bookP->BookTitle}</span>
   </br>
