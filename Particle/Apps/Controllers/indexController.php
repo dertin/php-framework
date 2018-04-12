@@ -26,6 +26,10 @@ class indexController extends Core\Controller
         $people = $personMapper->all();
         $books = $bookMapper->all();
 
+        $person = $personMapper->first(['PersonName' => 'Teo Muj']);
+        $booksP = $person->books;
+        $this->view->assign('BooksPeople', $booksP);
+
         /* Create enetity (Person) */
         // $person = $personMapper->first();
         // $newBook = $bookMapper->create([
@@ -52,26 +56,27 @@ class indexController extends Core\Controller
 
 
         /* Relations (In this case de save the relation )*/
-        $person = $personMapper->create(['PersonName' => 'Teo Muj Jr',
-                                        'PersonMail' => 'mateomu18@gmail.com',
-                                        'PersonBirthday' => $date,
-                                        'PersonCountry' => 'Uruguay']);
+        // $person = $personMapper->create(['PersonName' => 'Teo Muj Jr',
+        //                                 'PersonMail' => 'mateomu18@gmail.com',
+        //                                 'PersonBirthday' => $date,
+        //                                 'PersonCountry' => 'Uruguay']);
+        // $newBook = $bookMapper->build(['BookTitle' => 'The Book 3',
+        //                                'BookAuthor' => 'Jon Doe',
+        //                                'BookDatePublished' => $date,
+        //                                'BookEdition' => 1,
+        //                                'PersonId' => $person->PersonId,
+        //                               ]);
+        // $newBook->relation('person', $person);
+        // $bookMapper->save($newBook);
+        // $person->relation('books', $newBook);
+        // $personMapper->save($person, ['relations' => true]);
 
-        $newBook = $bookMapper->build(['BookTitle' => 'The Book 3',
-                                       'BookAuthor' => 'Jon Doe',
-                                       'BookDatePublished' => $date,
-                                       'BookEdition' => 1,
-                                       'PersonId' => $person->PersonId,
-                                      ]);
-        // $newBook->relation('person', $person);  ['relations' => true]
-        $bookMapper->save($newBook);
-        $person->relation('books', $newBook);
-        $personMapper->save($person, ['relations' => true]);
-        $booksP = $person->books;
-        $this->view->assign('BooksPeople', $booksP);
-
-
-        /* Events */
+        /* Events (if personId <= 0 exception)*/
+        // $person = $personMapper->create(['PersonId' => 0,
+        //                                 'PersonName' => 'Teo Muj Jr',
+        //                                 'PersonMail' => 'mateomu18@gmail.com',
+        //                                 'PersonBirthday' => $date,
+        //                                 'PersonCountry' => 'Uruguay']);
 
 
         $this->view->assign('books', $books);
