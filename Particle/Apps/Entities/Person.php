@@ -10,7 +10,7 @@ use Spot\MapperInterface as Mapper;
 class Person extends \Spot\Entity
 {
     protected static $table = 'person';
-    protected static $mapper = 'Particle\Apps\Entities\Mapper\Person';
+    protected static $mapper = 'Entities\Mapper\Person';
 
     public static function fields()
     {

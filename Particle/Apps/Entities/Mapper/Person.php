@@ -2,9 +2,7 @@
 
 namespace Particle\Apps\Entities\Mapper;
 
-use Spot\Mapper;
-
-class Persona extends Mapper
+class Persona extends \Spot\Mapper
 {
     public function libros1eraEdicion()
     {
