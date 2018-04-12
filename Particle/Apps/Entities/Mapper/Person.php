@@ -8,7 +8,7 @@ class Person extends Mapper
 {
     public function libros1eraEdicion()
     {
-        return $this->query('SELECT * FROM person INNER JOIN book ON book.PersonId = person.PersonId
-                              WHERE book.BookEdition = 1');
+        return $this->query('SELECT * FROM person INNER JOIN books ON books.PersonId = person.PersonId
+                              WHERE books.BookEdition = 1');
     }
 }

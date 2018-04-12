@@ -17,7 +17,6 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
         if (substr($ClassNameWithNameSpace, 0, strlen($sNamespace)) === $sNamespace) {
             $nameClass = substr($ClassNameWithNameSpace, strlen($sNamespace));
 
-            //$filePath = PARTICLE_PATH_APPS.'Entities'.DS.$nameClass.'.php';
             $filePath = ROOT . str_replace('\\', '/', $ClassNameWithNameSpace) . '.php';
 
             if (!is_readable($filePath)) {
