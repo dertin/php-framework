@@ -35,17 +35,17 @@ class indexController extends Core\Controller
         $books = $bookMapper->all();
         $bookDelete = $bookMapper->first();
 
-        $bookDelete->BookTitle = 'Title Change';
-        $this->view->assign('TitleUpd', $bookDelete->BookTitle);
-        $bookMapper->update($bookDelete);
-
-        $result = $bookMapper->delete($bookDelete);
-        if (!$result) {
-            return false;
-        } elseif (is_numeric($result)) {
-            $resultD = 'Delete success';
-        }
-        $this->view->assign('ResultDelete', $resultD);
+        // $bookDelete->BookTitle = 'Title Change';
+        //$this->view->assign('books', $books);
+        // $bookMapper->update($bookDelete);
+        //
+        // $result = $bookMapper->delete($bookDelete);
+        // if (!$result) {
+        //     return false;
+        // } elseif (is_numeric($result)) {
+        //     $resultD = 'Delete success';
+        // }
+        // $this->view->assign('ResultDelete', $resultD);
         // $newBook->relation('person', $person);
         // $bookMapper->save($newBook, ['relations' => true]);
 
