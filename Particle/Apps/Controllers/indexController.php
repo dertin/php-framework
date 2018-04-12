@@ -28,7 +28,7 @@ class indexController extends Core\Controller
 
         $person = $personMapper->first(['PersonName' => 'Teo Muj']);
         $booksP = $person->books;
-        $this->view->assign('BooksPeople', $booksP);
+        $this->view->assign('booksP', $booksP);
 
         /* Create enetity (Person) */
         // $person = $personMapper->first();
