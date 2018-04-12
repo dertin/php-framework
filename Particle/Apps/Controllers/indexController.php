@@ -57,11 +57,11 @@ class indexController extends Core\Controller
                                        'BookDatePublished' => $date,
                                        'BookEdition' => 3,
                                       ]);
-        // $person = $personMapper->create(['nombrePersona' => 'Teo Muj',
-        //                                 'edadPersona' => 23,
-        //                                 'fechaNacPersona' => $date,
-        //                                 'telefonoPersona' => '099123456']);
-        $person = $personMapper->first();
+        $person = $personMapper->create(['PersonName' => 'Teo Muj',
+                                        'PersonMail' => 'mateomu18@gmail.com',
+                                        'PersonBirthday' => $date,
+                                        'PersonCountry' => 'Uruguay']);
+        // $person = $personMapper->first();
         $newBook->relation('person', $person);
         $bookMapper->save($newBook, ['relations' => true]);
 
