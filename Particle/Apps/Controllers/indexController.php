@@ -52,21 +52,21 @@ class indexController extends Core\Controller
 
 
         /* Relations */
-        $person = $personMapper->create(['PersonName' => 'Teo Muj',
-                                        'PersonMail' => 'mateomu18@gmail.com',
-                                        'PersonBirthday' => $date,
-                                        'PersonCountry' => 'Uruguay']);
+        // $person = $personMapper->create(['PersonName' => 'Teo Muj',
+        //                                 'PersonMail' => 'mateomu18@gmail.com',
+        //                                 'PersonBirthday' => $date,
+        //                                 'PersonCountry' => 'Uruguay']);
 
         $newBook = $bookMapper->build(['BookTitle' => 'The Book',
                                        'BookAuthor' => 'Jon Doe',
                                        'BookDatePublished' => $date,
                                        'BookEdition' => 3,
-                                       'PersonId' => $person->PersonId,
+                                       // 'PersonId' => $person->PersonId,
                                       ]);
 
         // $person = $personMapper->first();
-        $newBook->relation('person', $person);
-        $bookMapper->save($newBook, ['relations' => true]);
+        // $newBook->relation('person', $person);  ['relations' => true]
+        $bookMapper->save($newBook);
 
         /* Events */
 
