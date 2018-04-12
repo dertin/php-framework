@@ -3,11 +3,13 @@
 namespace Particle\Apps\Test;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Constraint;
+use Particle\Apps\Controllers;
 
 /**
  * @covers Particle\Apps\testingController
  */
-final class testingControllerTest extends TestCase
+final class TestingControllerTest extends TestCase
 {
     protected $view;
 
@@ -37,8 +39,16 @@ final class testingControllerTest extends TestCase
 
     public function testORM()
     {
-        $objIndexController = new Particle/Apps/Controller/indexController;
-        $aResult = $objIndexController->testORM();
-        var_dump($aResult);
+        try {
+            $objIndexController = new Controllers\indexController;
+            //$aResult = $objIndexController->testORM();
+
+            $this->assertInternalType(Constraint\IsType::TYPE_INT, $aResult['PersonId']);
+            $this->assertNotEmpty($aResult['PersonId']);
+
+            $this->assertNotEmpty($aResult['BookTitle']);
+        } catch (\Exception $e) {
+            $this->fail('Exception: '.$e->getMessage());
+        }
     }
 }

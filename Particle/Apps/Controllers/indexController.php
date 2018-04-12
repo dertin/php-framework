@@ -42,8 +42,11 @@ class indexController extends Core\Controller
         $bookMapper->save($newBook);
         $person->relation('books', $newBook);
         $personMapper->save($person, ['relations' => true]);
-        return array('PersonId' => $person->PersonId, 'FisrtBookId'=> $person->books->first()->BookId);
-        
+        $bookTitle = $person->books->BookTitle;
+
+
+        return array('PersonId' => (int)$person->PersonId, 'BookTitle'=> $bookTitle);
+
         // $booksP = $person->books;
 
         /* Create enetity (Person) */
