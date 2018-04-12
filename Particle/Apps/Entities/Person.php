@@ -5,10 +5,12 @@ namespace Particle\Apps\Entities;
 use Spot\EntityInterface as Entity;
 use Spot\MapperInterface as Mapper;
 
+// use Particle\Apps\Entities\Mapper;
+
 class Person extends \Spot\Entity
 {
     protected static $table = 'person';
-    protected static $mapper = '\Particle\Apps\Entities\Mapper\Person';
+    protected static $mapper = 'Particle\Apps\Entities\Mapper\Person';
 
     public static function fields()
     {

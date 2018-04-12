@@ -1,6 +1,6 @@
 <?php
 
-namespace Particle\Apps\Entities;
+namespace Particle\Apps\Entities\Mapper;
 
 use Spot\Mapper;
 
