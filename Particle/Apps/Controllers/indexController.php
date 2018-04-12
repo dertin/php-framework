@@ -14,15 +14,19 @@ class indexController extends Core\Controller
     public function index()
     {
         $personMapper = $this->spot->mapper('Particle\Apps\Entities\Person');
-        // $personMapper->migrate();
+        $personMapper->migrate();
 
         $bookMapper = $this->spot->mapper('Particle\Apps\Entities\Books');
-        // $bookMapper->migrate();
+        $bookMapper->migrate();
 
         $sBirthday = '1995-02-24';
         $date = new \DateTime($sBirthday);
-        $people = $personMapper->all();
 
+        /* Retrive all */
+        $people = $personMapper->all();
+        $books = $bookMapper->all();
+
+        /* Create enetity (Person) */
         // $person = $personMapper->first();
         // $newBook = $bookMapper->create([
         //             'PersonId' => $person->PersonaId,
@@ -32,13 +36,12 @@ class indexController extends Core\Controller
         //             'BookEdition' => 1,
         // ]);
 
-        $books = $bookMapper->all();
-        $bookDelete = $bookMapper->first();
 
+        /* Delete && Update */
+        // $bookDelete = $bookMapper->first();
         // $bookDelete->BookTitle = 'Title Change';
-        //$this->view->assign('books', $books);
+        // $this->view->assign('TitleUpd', $bookDelete->BookTitle);
         // $bookMapper->update($bookDelete);
-        //
         // $result = $bookMapper->delete($bookDelete);
         // if (!$result) {
         //     return false;
@@ -46,33 +49,25 @@ class indexController extends Core\Controller
         //     $resultD = 'Delete success';
         // }
         // $this->view->assign('ResultDelete', $resultD);
-        // $newBook->relation('person', $person);
-        // $bookMapper->save($newBook, ['relations' => true]);
 
 
-        // $autoNew = $autoMapper->build(['marcaAuto' => 'Bugatti',
-        //                                'matriculaAuto' => 123456,
-        //                               ]);
-        // $persona = new \Entity\Persona(['nombrePersona' => 'Teo Muj',
-        //                                 'edadPersona' => 25,
+        /* Relations */
+        $newBook = $bookMapper->build(['BookTitle' => 'The Book',
+                                       'BookAuthor' => 'Jon Doe',
+                                       'BookDatePublished' => $date,
+                                       'BookEdition' => 3,
+                                      ]);
+        // $person = $personMapper->create(['nombrePersona' => 'Teo Muj',
+        //                                 'edadPersona' => 23,
         //                                 'fechaNacPersona' => $date,
         //                                 'telefonoPersona' => '099123456']);
-        // $autoNew->relation('duenio', $persona);
-        // $autoMapper->save($autoNew, ['relations' => true]);
+        $person = $personMapper->first();
+        $newBook->relation('person', $person);
+        $bookMapper->save($newBook, ['relations' => true]);
 
-        // $newPerson = $personMapper->build([
-        //            'PersonMail' => 'mateomu18@gmail.com',
-        //            'PersonName' => 'Mateo Mujica',
-        //            'PersonBirthday' => $date,
-        //            'PersonCountry' => 'Uruguay'
-        //           ]);
-        // $result = $personMapper->insert($newPerson);
-        // if (!$result) {
-        //     echo "No insert";
-        //     return false;
-        // }
-        // $nameP = $personMapper->first(['PersonName' => 'Mateo Mujica'])->PersonName;
-        // $this->view->assign('PersonName', $nameP);
+        /* Events */
+
+
         $this->view->assign('books', $books);
         $this->view->assign('people', $people);
         $this->view->show();
