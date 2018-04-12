@@ -52,19 +52,21 @@ class indexController extends Core\Controller
 
 
         /* Relations (In this case de save the relation )*/
-        $person = $personMapper->create(['PersonName' => 'Teo Muj',
+        $person = $personMapper->create(['PersonName' => 'Teo Muj Jr',
                                         'PersonMail' => 'mateomu18@gmail.com',
                                         'PersonBirthday' => $date,
                                         'PersonCountry' => 'Uruguay']);
 
-        $newBook = $bookMapper->build(['BookTitle' => 'The Book 2',
+        $newBook = $bookMapper->build(['BookTitle' => 'The Book 3',
                                        'BookAuthor' => 'Jon Doe',
                                        'BookDatePublished' => $date,
                                        'BookEdition' => 1,
                                        'PersonId' => $person->PersonId,
                                       ]);
-        // $newBook->relation('person', $person);
-        $bookMapper->save($newBook, ['relations' => true]);
+        // $newBook->relation('person', $person);  ['relations' => true]
+        $bookMapper->save($newBook);
+        $person->relation('books', $newBook);
+        $personMapper->save($person, ['relations' => true]);
         $booksP = $person->books;
         $this->view->assign('BooksPeople', $booksP);
 
