@@ -13,6 +13,11 @@ class indexController extends Core\Controller
 
     public function index()
     {
+        $this->view->show();
+    }
+
+    public function testORM()
+    {
         $personMapper = $this->spot->mapper('Particle\Apps\Entities\Person');
         $personMapper->migrate();
 
@@ -22,10 +27,24 @@ class indexController extends Core\Controller
         $sBirthday = '1995-02-24';
         $date = new \DateTime($sBirthday);
 
-        /* Retrive all */
-        $people = $personMapper->all();
-        $books = $bookMapper->all();
-
+        /* Relations (In this case de save the relation )*/
+        $person = $personMapper->create(['PersonName' => 'Teo Muj Jr',
+                                        'PersonMail' => 'mateomu18@gmail.com',
+                                        'PersonBirthday' => $date,
+                                        'PersonCountry' => 'Uruguay']);
+        $newBook = $bookMapper->build(['BookTitle' => 'The Book 3',
+                                       'BookAuthor' => 'Jon Doe',
+                                       'BookDatePublished' => $date,
+                                       'BookEdition' => 1,
+                                       'PersonId' => $person->PersonId,
+                                      ]);
+        $newBook->relation('person', $person);
+        $bookMapper->save($newBook);
+        $person->relation('books', $newBook);
+        $personMapper->save($person, ['relations' => true]);
+        return array('PersonId' => $person->PersonId, 'FisrtBookId'=> $person->books->first()->BookId);
+        
+        // $booksP = $person->books;
 
         /* Create enetity (Person) */
         // $person = $personMapper->first();
@@ -36,7 +55,6 @@ class indexController extends Core\Controller
         //             'BookDatePublished' => $date,
         //             'BookEdition' => 1,
         // ]);
-
 
         /* Delete && Update */
         // $bookDelete = $bookMapper->first();
@@ -49,27 +67,6 @@ class indexController extends Core\Controller
         // } elseif (is_numeric($result)) {
         //     $resultD = 'Delete success';
         // }
-        // $this->view->assign('ResultDelete', $resultD);
-
-
-        /* Relations (In this case de save the relation )*/
-        // $person = $personMapper->create(['PersonName' => 'Teo Muj Jr',
-        //                                 'PersonMail' => 'mateomu18@gmail.com',
-        //                                 'PersonBirthday' => $date,
-        //                                 'PersonCountry' => 'Uruguay']);
-        // $newBook = $bookMapper->build(['BookTitle' => 'The Book 3',
-        //                                'BookAuthor' => 'Jon Doe',
-        //                                'BookDatePublished' => $date,
-        //                                'BookEdition' => 1,
-        //                                'PersonId' => $person->PersonId,
-        //                               ]);
-        // $newBook->relation('person', $person);
-        // $bookMapper->save($newBook);
-        // $person->relation('books', $newBook);
-        // $personMapper->save($person, ['relations' => true]);
-        // $booksP = $person->books;
-        // $this->view->assign('booksP', $booksP);
-
 
         /* Events (if personId <= 0 exception)*/
         // $person = $personMapper->create(['PersonId' => 0,
@@ -79,11 +76,10 @@ class indexController extends Core\Controller
         //                                 'PersonCountry' => 'Uruguay']);
 
         /* Custom Mapper */
-        $owners1stEditionBooks = $personMapper->libros1eraEdicion();
-        $this->view->assign('owners1stEditionBooks', $owners1stEditionBooks);
+        // $owners1stEditionBooks = $personMapper->libros1eraEdicion();
 
-        $this->view->assign('books', $books);
-        $this->view->assign('people', $people);
-        $this->view->show();
+        /* Retrive all */
+        // $people = $personMapper->all();
+        // $books = $bookMapper->all();
     }
 }

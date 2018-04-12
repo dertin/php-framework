@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers Particle\Apps\testingController
  */
-final class TestingControllerTest extends TestCase
+final class testingControllerTest extends TestCase
 {
     protected $view;
 
@@ -16,22 +16,29 @@ final class TestingControllerTest extends TestCase
         $this->view = new \Smarty();
     }
 
-    public function testBootstrapDefault()
+    // public function testBootstrapDefault()
+    // {
+    //     try {
+    //         Particle\Core\Bootstrap::run(new Particle\Core\Request('testing/testing'));
+    //         $this->assertTrue(true);
+    //     } catch (\Exception $e) {
+    //         $this->fail('Exception: '.$e->getMessage());
+    //     }
+    // }
+    //
+    // public function testSumar()
+    // {
+    //     $cSuma = new Particle\Apps\testingController;
+    //
+    //     $resut = $cSuma->suma(2, 1);
+    //
+    //     $this->assertEquals(3, $resut);
+    // }
+
+    public function testORM()
     {
-        try {
-            Particle\Core\Bootstrap::run(new Particle\Core\Request('testing/testing'));
-            $this->assertTrue(true);
-        } catch (\Exception $e) {
-            $this->fail('Exception: '.$e->getMessage());
-        }
-    }
-
-    public function testSumar()
-    {
-        $cSuma = new Particle\Apps\testingController;
-
-        $resut = $cSuma->suma(2, 1);
-
-        $this->assertEquals(3, $resut);
+        $objIndexController = new Particle/Apps/Controller/indexController;
+        $aResult = $objIndexController->testORM();
+        var_dump($aResult);
     }
 }
