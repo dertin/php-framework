@@ -41,6 +41,9 @@ At the moment, you can test it in a test environment and see how it works.
 
 
     ```
+    index load.php;
+	  autoindex off;
+    
     location ~ /.php$ {   
   		include /etc/nginx/fastcgi.conf;   
   		fastcgi_pass 127.0.0.1:9007;  

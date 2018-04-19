@@ -1,0 +1,9 @@
+RewriteEngine On
+
+Options +FollowSymLinks -MultiViews -Indexes
+DirectoryIndex load.php index.php index.html
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^(.+)$ load.php?request=$1 [QSA,L]
