@@ -269,12 +269,14 @@ final class Request
                 $requestTemp = $this->request;
 
                 $requestExplode = explode('/', $requestTemp);
-
-                // The first position is empty. It is eliminated
-                unset($requestExplode[0]);
+                
+                if(empty($requestExplode[0])){
+                  // The first position is empty. It is eliminated
+                  unset($requestExplode[0]);
+                }
 
                 $this->controller = strtolower(array_shift($requestExplode));
-                
+
                 $this->method = strtolower(array_shift($requestExplode));
                 $this->args = Core\Security::filterAlphaNum($requestExplode);
             }
