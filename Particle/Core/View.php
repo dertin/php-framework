@@ -206,8 +206,8 @@ final class View extends \Smarty
                 $this->assign('_layoutParams', $_params);
             }
 
-            if (defined('VarGlobalJS')) {
-                $this->assign('varGlobalToJs', VarGlobalJS);
+            if (defined('VARGLOBALJS')) {
+                $this->assign('varGlobalToJs', VARGLOBALJS);
             }
 
             $sHeader = $this->fetch('header.tpl', self::$cacheKey);

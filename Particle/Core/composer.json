@@ -1,8 +1,8 @@
 {
     "require": {
-        "vlucas/spot2": "~2.0",
-        "phpfastcache/phpfastcache": "^6.1",
-        "smarty/smarty": "^3.1",
-        "stefangabos/zebra_session": "^2.1"
+        "smarty/smarty": "dev-master",
+        "vlucas/spot2": "dev-master",
+        "phpfastcache/phpfastcache": "dev-master",
+        "sobstel/sesshin": "dev-master"
     }
 }

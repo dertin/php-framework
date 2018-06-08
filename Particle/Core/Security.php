@@ -112,6 +112,22 @@ final class Security
         }
     }
 
+    final public static function validateDate($date, $format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
+    }
+
+    final public static function checkDateRange($start_date, $end_date, $evaluame)
+    {
+        // data format YYYY-mm-dd
+        $start_ts = strtotime($start_date);
+        $end_ts = strtotime($end_date);
+        $user_ts = strtotime($evaluame);
+        return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
+    }
+
+
     final public static function validateEmail($email)
     {
         $email = trim($email);
@@ -419,14 +435,23 @@ final class Security
         return $client_ip;
     }
 
-    final public static function validArrayIsNumeric($aInput)
+    final public static function isValidArrayIsNumeric($aInput)
     {
+        if (empty($aInput)) {
+            return false;
+        }
         foreach ($aInput as $key => $value) {
             if (!is_numeric($value)) {
                 return false;
             }
         }
         return true;
+    }
+
+    final public static function isValidJSON($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 
     final public static function getIntentoBruteForce($nameZone)

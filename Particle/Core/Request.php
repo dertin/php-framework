@@ -73,7 +73,7 @@ final class Request
      */
     private $flagMapping = false;
 
-    public function __construct($requestTesting = null)
+    public function __construct($requestTesting = null, $methodTesting = null, $optionsTesting = null)
     {
         $this->request = null;
 
@@ -83,6 +83,9 @@ final class Request
             $this->request = $requestTesting;
         }
 
+        if (!empty($optionsTesting) && is_array($optionsTesting) && !empty($methodTesting) && ($methodTesting === 'GET' || $methodTesting === 'POST' || $methodTesting === 'PUT')) {
+            $this->setRequestGlobals($methodTesting, $optionsTesting);
+        }
         if (!empty($this->request)) {
             $this->loadClassAttributes($this->xmlSetMapping());
         }
@@ -269,10 +272,10 @@ final class Request
                 $requestTemp = $this->request;
 
                 $requestExplode = explode('/', $requestTemp);
-                
-                if(empty($requestExplode[0])){
-                  // The first position is empty. It is eliminated
-                  unset($requestExplode[0]);
+
+                if (empty($requestExplode[0])) {
+                    // The first position is empty. It is eliminated
+                    unset($requestExplode[0]);
                 }
 
                 $this->controller = strtolower(array_shift($requestExplode));
@@ -445,5 +448,37 @@ final class Request
     public function getArgs()
     {
         return $this->args;
+    }
+
+    /**
+     * Sets php super globals so other packages would have access to them on tests context
+     * @param string $method  [GET|POST|PUT]
+     * @param array  $options
+     */
+    private function setRequestGlobals($method, $options = array())
+    {
+        $_SERVER['REQUEST_METHOD'] = $method;
+        if (!empty($options)) {
+            if ($method === "GET") {
+                foreach ($options as $key => $value) {
+                    $_GET[$key] = $value;
+                }
+            }
+            if ($method === "POST") {
+                foreach ($options as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+            if ($method === "PUT") {
+                foreach ($options as $key => $value) {
+                    $_POST[$key] = $value;
+                }
+            }
+        }
+    }
+    public function closeRequestTesting()
+    {
+        $_GET = array();
+        $_POST = array();
     }
 }

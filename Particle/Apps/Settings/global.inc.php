@@ -64,8 +64,8 @@ if (!defined('PASSMAIL')) {
 if (!defined('FROMMAIL')) {
     define('FROMMAIL', 'mail@localhost.com');
 }
-if (!defined('VarGlobalJS')) {
-    define('VarGlobalJS', '
-        var VarGlobalJS = "1";
+if (!defined('VARGLOBALJS')) {
+    define('VARGLOBALJS', '
+        var VARGLOBALJS = "1";
     ');
 }

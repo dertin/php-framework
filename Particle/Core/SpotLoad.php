@@ -28,9 +28,18 @@ abstract class SpotLoad
               'password' => DB_PASS_CONFIG,
               'host' => DB_HOST_CONFIG,
               'driver' => DB_DRIVER_CONFIG,
+              'charset' => 'utf8'
             ]);
 
             self::$spotInstance = new \Spot\Locator($cfg);
         }
+    }
+
+    public function loadMapper($strEntity)
+    {
+        if (!isset(self::$spotInstance) || !(self::$spotInstance instanceof \Spot\Locator)) {
+            return false;
+        }
+        return self::$spotInstance->mapper('Particle\Apps\Entities\\'.$strEntity);
     }
 }

@@ -142,13 +142,18 @@ abstract class Controller extends Core\SpotLoad
         return 0;
     }
 
-    final protected static function getParam($key, $array = null, $default = false)
+    final protected static function getParam($key, $array = null, $default = false, $filterValidate = null)
     {
         if (is_null($array)) {
             $array = $_REQUEST;
         }
 
         if (isset($array[$key])) {
+            if (!empty($filterValidate)) {
+                if (!filter_var($array[$key], $filterValidate)) {
+                    return $default;
+                }
+            }
             return $array[$key];
         } else {
             return $default;
@@ -223,14 +228,5 @@ abstract class Controller extends Core\SpotLoad
         } else {
             echo 'Error - Invalid File';
         }
-    }
-
-    final protected static function checkDateRange($start_date, $end_date, $evaluame)
-    {
-        // data format YYYY-mm-dd
-        $start_ts = strtotime($start_date);
-        $end_ts = strtotime($end_date);
-        $user_ts = strtotime($evaluame);
-        return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
     }
 }
