@@ -121,7 +121,7 @@ abstract class Controller extends Core\SpotLoad
         }
 
         if (isset($array[$key]) && !empty($array[$key])) {
-            if ($array != $_SESSION) {
+            if (!isset($_SESSION) || (isset($_SESSION) && $array != $_SESSION)) {
                 if ($array == $_GET) {
                     $input = INPUT_GET;
                 } elseif ($array == $_POST) {
