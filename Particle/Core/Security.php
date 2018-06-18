@@ -302,62 +302,46 @@ final class Security
         }
         return false;
     }
-    // TODO: Mejora a prueba de fallos aleatorios
+
     final public static function encrypt($decrypted = "", $password = '', $salt = SALT_CODE)
     {
         // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
-        $key = hash('SHA256', $salt . $password, true);
-        if (strlen($key) < 16) {
-            Core\Debug::savelogfile(0, 'ERROR', 'invalid key encrypt');
-            return null;
-        }
-        // Build $iv and $iv_base64.  We use a block size of 128 bits (AES compliant) and CBC mode.  (Note: ECB mode is inadequate as IV is not used.)
-        srand();
-        // calcular size block
-        $sizeBlock = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
-        // create iv
-        $iv = mcrypt_create_iv($sizeBlock, MCRYPT_RAND);
-        $iv_base64 = base64_encode($iv);
-        $iv_base64 = rtrim($iv_base64, '=');
+        $key = hash('sha256', $salt . $password);
 
-        if (strlen($iv_base64) != 22) {
-            return false;
-        }
+        $ivSize = openssl_cipher_iv_length('AES-256-CBC');
+        $iv = openssl_random_pseudo_bytes($ivSize);
+
         // Encrypt $decrypted and an MD5 of $decrypted using $key.  MD5 is fine to use here because it's just to verify successful decryption.
-        $encrypted = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key, $decrypted . md5($decrypted), MCRYPT_MODE_CBC, $iv));
-        // We're done!
+        $encrypted = openssl_encrypt($decrypted . md5($decrypted), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
 
-        return $iv_base64 . $encrypted;
+        // For storage/transmission, we simply concatenate the IV and cipher text
+        $encrypted = base64_encode($iv . $encrypted);
+
+        return $encrypted;
     }
-    // TODO: Mejora a prueba de fallos aleatorios
+
     final public static function decrypt($encrypted = null, $password = '', $salt = SALT_CODE)
     {
-        // Fix session start
         if (empty($encrypted)) {
             return null;
         }
-
         // Build a 256-bit $key which is a SHA256 hash of $salt and $password.
-        $key = hash('SHA256', $salt . $password, true);
-        if (strlen($key) < 16) {
-            Core\Debug::savelogfile(0, 'ERROR', 'invalid key decrypt');
-            return null;
-        }
-        // Retrieve $iv which is the first 22 characters plus ==, base64_decoded.
-        $iv = base64_decode(substr($encrypted, 0, 22) . '==');
-        // Remove $iv from $encrypted.
-        $encrypted = substr($encrypted, 22);
-        // Decrypt the data.  rtrim won't corrupt the data because the last 32 characters are the md5 hash; thus any \0 character has to be padding.
-        $decrypted = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, base64_decode($encrypted), MCRYPT_MODE_CBC, $iv), "\0\4");
+        $key = hash('sha256', $salt . $password);
+
+        $encrypted = base64_decode($encrypted);
+        $ivSize = openssl_cipher_iv_length('AES-256-CBC');
+        $iv = substr($encrypted, 0, $ivSize);
+        $decrypted = openssl_decrypt(substr($encrypted, $ivSize), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $iv);
+
         // Retrieve $hash which is the last 32 characters of $decrypted.
-        $hash = substr($decrypted, -32);
+        $verifyMD5 = substr($decrypted, -32);
         // Remove the last 32 characters from $decrypted.
         $decrypted = substr($decrypted, 0, -32);
         // Integrity check.  If this fails, either the data is corrupted, or the password/salt was incorrect.
-        if (md5($decrypted) != $hash) {
+        if (md5($decrypted) != $verifyMD5) {
+            Core\Debug::savelogfile(0, 'ERROR', 'decrypt() invalid verify MD5');
             return false;
         }
-        // Yay!
         return $decrypted;
     }
 

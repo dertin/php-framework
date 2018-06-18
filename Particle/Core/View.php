@@ -244,7 +244,6 @@ final class View extends \Smarty
                         echo $sHeader.$sMenuTop.$sView.$sFooter;
                         break;
                 }
-
                 exit();
             } else {
                 switch ($typereturn) {

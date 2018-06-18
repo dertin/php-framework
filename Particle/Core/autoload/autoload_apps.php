@@ -63,3 +63,22 @@ spl_autoload_register(function ($ClassNameWithNameSpace) {
     }
     return true;
 });
+
+/**
+ * Autoload de Addons
+ */
+spl_autoload_register(function ($ClassNameWithNameSpace) {
+    $namespace = 'Particle\Apps\Addons\\';
+
+    if (substr($ClassNameWithNameSpace, 0, strlen($namespace)) === $namespace) {
+        $nameClassFull = substr($ClassNameWithNameSpace, strlen($namespace));
+        $nameClass = str_replace('Addons', '', $nameClassFull);
+
+        $filePath = ADDONS_PATH.$nameClass.DS.'init.php';
+
+        if (is_readable($filePath)) {
+            require_once $filePath;
+        }
+    }
+    return true;
+});

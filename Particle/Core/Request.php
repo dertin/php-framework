@@ -83,9 +83,6 @@ final class Request
             $this->request = $requestTesting;
         }
 
-        if (!empty($optionsTesting) && is_array($optionsTesting) && !empty($methodTesting) && ($methodTesting === 'GET' || $methodTesting === 'POST' || $methodTesting === 'PUT')) {
-            $this->setRequestGlobals($methodTesting, $optionsTesting);
-        }
         if (!empty($this->request)) {
             $this->loadClassAttributes($this->xmlSetMapping());
         }
@@ -132,7 +129,6 @@ final class Request
     {
         if (!isset($this->request) || !is_string($this->request)) {
             throw new \Exception('Bad Request');
-
             return false;
         }
 
@@ -191,13 +187,11 @@ final class Request
                     if (isset($this->aURLs[$i]['@attributes']['rule']) && !empty($this->aURLs[$i]['@attributes']['rule']) && isset($this->aURLs[$i]['@attributes']['wildcard']) && !empty($this->aURLs[$i]['@attributes']['wildcard'])) {
                         if (!is_string($this->aURLs[$i]['@attributes']['rule'])) {
                             throw new \Exception('Bad XML Rule');
-
                             return false;
                         }
 
                         if (!is_string($this->aURLs[$i]['@attributes']['wildcard'])) {
                             throw new \Exception('Bad XML WildCard');
-
                             return false;
                         }
 
@@ -207,7 +201,6 @@ final class Request
 
                         if ($intCountRule != $intCountWildCard) {
                             throw new \Exception('Bad XML Config Rule/WildCard');
-
                             return false;
                         }
 
@@ -216,7 +209,17 @@ final class Request
                         $sWildCard = false;
                     }
 
-                    if ($this->compareRequestXMLURL($this->aURLs[$i]['@attributes']['request'], $this->request, $sWildCard)) {
+                    if (isset($this->aURLs[$i]['@attributes']['jsonlist'])) {
+                        if (!is_string($this->aURLs[$i]['@attributes']['jsonlist'])) {
+                              throw new \Exception('Bad XML jsonlist');
+                              return false;
+                        }
+                        $JsonList = $this->aURLs[$i]['@attributes']['jsonlist'];
+                    } else {
+                        $JsonList = false;
+                    }
+
+                    if ($this->compareRequestXMLURL($this->aURLs[$i]['@attributes']['request'], $this->request, $sWildCard, $JsonList)) {
                         $this->flagMapping = true;
 
                         $this->controller = $this->aURLs[$i]['controller'];
@@ -292,11 +295,10 @@ final class Request
         }
     }
 
-    final private function compareRequestXMLURL($requestXML, $requestURL, $sWildCard = false)
+    final private function compareRequestXMLURL($requestXML, $requestURL, $sWildCard = false, $sJsonList = false)
     {
         if (!is_string($requestXML) || !is_string($requestURL) || empty($requestXML) || empty($requestURL)) {
             throw new \Exception('Bad Value XML/URL Request');
-
             return false;
         } else {
             if (is_string($sWildCard) && !empty($sWildCard)) {
@@ -311,11 +313,25 @@ final class Request
                 preg_match_all($sPregRequest, $requestURL, $result, PREG_SET_ORDER);
 
                 if (count($result) > 0) {
-                    $this->aArgsToFilter = $result[0];
-
-                    unset($this->aArgsToFilter[0]);
-
+                    $result = $result[0];
+                    $this->aArgsToFilter = $result;
+                    unset($this->aArgsToFilter[0]); // no util
                     $this->aArgsToFilter = array_values($this->aArgsToFilter);
+
+                    if (!empty($sJsonList)) {
+                        $aJsonList = explode('|', $sJsonList);
+                        $intListNum = -1;
+                        foreach ($aJsonList as $fileJsonList) {
+                            $intListNum++;
+                            if ($fileJsonList == 'null' || !isset($this->aArgsToFilter[$intListNum])) {
+                                continue;
+                            }
+                            if (!$this->applyJsonList($fileJsonList, $this->aArgsToFilter[$intListNum])) {
+                                $this->aArgsToFilter = false;
+                                return false;
+                            }
+                        }
+                    }
 
                     return true;
                 } else {
@@ -333,6 +349,22 @@ final class Request
         }
     }
 
+    final private function applyJsonList($strFileJson, $requestPartURL)
+    {
+        $sRubroNomPromesa = trim($requestPartURL);
+
+        $jsonRubrosRouting = file_get_contents(PARTICLE_PATH_APPS.'Router'.DS.$strFileJson.'.json');
+
+        if (!empty($jsonRubrosRouting)) {
+            $aRubrosRouting = @json_decode($jsonRubrosRouting, true);
+
+            if (isset($aRubrosRouting[$sRubroNomPromesa])) {
+                return true;
+            }
+            return false;
+        }
+    }
+
     final private function applyRule($aURLRuleXML, $aNameAgrsXML = false)
     {
         if (!$this->aArgsToFilter) {
@@ -343,8 +375,13 @@ final class Request
         $aRuleArgs = array();
         $aRuleNameArgs = array();
 
+        $countArgsName = 0;
         $countURLRuleXML = count($aURLRuleXML);
-        $countArgsName = count($aNameAgrsXML);
+        //TODO added by Mateo
+        if (is_array($aNameAgrsXML)) {
+            $countArgsName = count($aNameAgrsXML);
+        }
+
         $countRules = count($this->aRules);
         $countArgsToFilter = count($this->aArgsToFilter);
 
@@ -396,6 +433,7 @@ final class Request
                     }
 
                     if (!empty($this->aRules[$i]['splitter'])) {
+                        //var_dump($tempArg);
                         $splitterRule = $this->aRules[$i]['splitter'];
                         $tempArg = explode($splitterRule, $tempArg);
                     } else {
@@ -448,37 +486,5 @@ final class Request
     public function getArgs()
     {
         return $this->args;
-    }
-
-    /**
-     * Sets php super globals so other packages would have access to them on tests context
-     * @param string $method  [GET|POST|PUT]
-     * @param array  $options
-     */
-    private function setRequestGlobals($method, $options = array())
-    {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        if (!empty($options)) {
-            if ($method === "GET") {
-                foreach ($options as $key => $value) {
-                    $_GET[$key] = $value;
-                }
-            }
-            if ($method === "POST") {
-                foreach ($options as $key => $value) {
-                    $_POST[$key] = $value;
-                }
-            }
-            if ($method === "PUT") {
-                foreach ($options as $key => $value) {
-                    $_POST[$key] = $value;
-                }
-            }
-        }
-    }
-    public function closeRequestTesting()
-    {
-        $_GET = array();
-        $_POST = array();
     }
 }

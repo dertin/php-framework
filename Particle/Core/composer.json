@@ -3,6 +3,11 @@
         "smarty/smarty": "dev-master",
         "vlucas/spot2": "dev-master",
         "phpfastcache/phpfastcache": "dev-master",
-        "sobstel/sesshin": "dev-master"
+        "sobstel/sesshin": "1.2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.2.4",
+        "sempro/phpunit-pretty-print": "dev-master",
+        "guzzlehttp/guzzle": "~6.0"
     }
 }

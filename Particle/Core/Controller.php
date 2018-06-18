@@ -26,7 +26,7 @@ abstract class Controller extends Core\SpotLoad
     public function __construct()
     {
         parent::__construct(); // init $spotInstance
-        $this->spot = parent::$spotInstance;
+        //$this->spot = parent::$spotInstance;
 
         self::$controller = Core\App::getInstance()->getAppController();
         self::$method = Core\App::getInstance()->getAppMethod();
@@ -46,29 +46,16 @@ abstract class Controller extends Core\SpotLoad
 
     final protected static function loadAddons($addons_name = false, $noException = false)
     {
-        $pathPluginInit = ADDONS_PATH.$addons_name.DS.'init.php';
+        $classPlugin = $addons_name.'Addons';
 
-        if (is_readable($pathPluginInit)) {
-            require_once $pathPluginInit;
+        $pluginNamesapce = 'Particle\\Apps\\Addons\\'.$classPlugin;
+        $pluginInstance = new $pluginNamesapce();
 
-            $classPlugin = $addons_name.'Addons';
-
-            $pluginNamesapce = 'Particle\\Apps\\Addons\\'.$classPlugin;
-
-            if (class_exists($pluginNamesapce, false)) {
-                $pluginInstance = new $pluginNamesapce();
-
-                return $pluginInstance;
-            } else {
-                if (!$noException) {
-                    throw new \Exception('Bad Class Name Addons');
-                } else {
-                    return false;
-                }
-            }
+        if ($pluginInstance instanceof $pluginNamesapce) {
+            return $pluginInstance;
         } else {
             if (!$noException) {
-                throw new \Exception('Error Addons');
+                throw new \Exception('Bad Class Name Addons');
             } else {
                 return false;
             }
@@ -120,6 +107,7 @@ abstract class Controller extends Core\SpotLoad
             $array = $_POST;
         }
 
+
         if (isset($array[$key]) && !empty($array[$key])) {
             if (!isset($_SESSION) || (isset($_SESSION) && $array != $_SESSION)) {
                 if ($array == $_GET) {
@@ -131,15 +119,12 @@ abstract class Controller extends Core\SpotLoad
                 } else {
                     return false;
                 }
-
                 $array[$key] = filter_input($input, $key, FILTER_VALIDATE_INT);
             }
             $filterInt = Core\Security::filterInt($array[$key], $default);
-
             return $filterInt;
         }
-
-        return 0;
+        return $default;
     }
 
     final protected static function getParam($key, $array = null, $default = false, $filterValidate = null)

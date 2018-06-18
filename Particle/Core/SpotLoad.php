@@ -13,7 +13,7 @@ use Particle\Core;
  *  @abstract
  **/
 
-abstract class SpotLoad
+class SpotLoad
 {
     protected static $spotInstance = null;
 
@@ -35,10 +35,11 @@ abstract class SpotLoad
         }
     }
 
-    public function loadMapper($strEntity)
+    final public function loadMapper($strEntity)
     {
         if (!isset(self::$spotInstance) || !(self::$spotInstance instanceof \Spot\Locator)) {
-            return false;
+            // If invoked from an Addons
+            self::__construct(); // init $spotInstance
         }
         return self::$spotInstance->mapper('Particle\Apps\Entities\\'.$strEntity);
     }
