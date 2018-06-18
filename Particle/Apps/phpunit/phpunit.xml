@@ -1,7 +1,11 @@
-<phpunit bootstrap="bootstrap.php">
-  <!-- <testsuites>
-    <testsuite name="Testing">
-      <directory>tests</directory>
+<phpunit bootstrap="bootstrap.php"
+colors="true"
+processIsolation="true"
+verbose="false"
+printerClass="Sempro\PHPUnitPrettyPrinter\PrettyPrinter">
+  <testsuites>
+    <testsuite name="AllTests">
+      <directory>./tests</directory>
     </testsuite>
-  </testsuites> -->
+  </testsuites>
 </phpunit>

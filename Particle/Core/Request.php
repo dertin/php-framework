@@ -351,9 +351,13 @@ final class Request
 
     final private function applyJsonList($strFileJson, $requestPartURL)
     {
+        $strPathFileJson = PARTICLE_PATH_APPS.'Router'.DS.$strFileJson.'.json';
+        if (!is_readable($strPathFileJson)) {
+            return false;
+        }
         $sRubroNomPromesa = trim($requestPartURL);
 
-        $jsonRubrosRouting = file_get_contents(PARTICLE_PATH_APPS.'Router'.DS.$strFileJson.'.json');
+        $jsonRubrosRouting = file_get_contents($strPathFileJson);
 
         if (!empty($jsonRubrosRouting)) {
             $aRubrosRouting = @json_decode($jsonRubrosRouting, true);
