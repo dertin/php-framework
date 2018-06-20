@@ -381,7 +381,7 @@ final class Request
 
         $countArgsName = 0;
         $countURLRuleXML = count($aURLRuleXML);
-        //TODO added by Mateo
+        // added by Mateo
         if (is_array($aNameAgrsXML)) {
             $countArgsName = count($aNameAgrsXML);
         }
@@ -437,27 +437,26 @@ final class Request
                     }
 
                     if (!empty($this->aRules[$i]['splitter'])) {
-                        //var_dump($tempArg);
                         $splitterRule = $this->aRules[$i]['splitter'];
                         $tempArg = explode($splitterRule, $tempArg);
-                    } else {
-                        throw new \Exception('Splitter Rule is not defined');
-
-                        return false;
                     }
 
                     if (is_null($this->args)) {
                         $this->args = array();
                     }
-
-                    foreach ($tempArg as $value) {
-                        if (isset($aRuleNameArgs[$a]['key'])) {
-                            $this->args[$aRuleNameArgs[$a]['key']] = $value;
-                        } else {
-                            array_push($this->args, $value);
-                        }
+                    if (is_string($tempArg)) {
+                        $tempArg = array($tempArg);
                     }
 
+                    if (is_array($tempArg) && !empty($tempArg)) {
+                        foreach ($tempArg as $value) {
+                            if (isset($aRuleNameArgs[$a]['key'])) {
+                                $this->args[$aRuleNameArgs[$a]['key']] = $value;
+                            } else {
+                                array_push($this->args, $value);
+                            }
+                        }
+                    }
                     $bRule = true;
                 }
             }
