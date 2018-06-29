@@ -85,10 +85,10 @@ final class View extends \Smarty
         self::$sCurrAssetName = 'default';
     }
 
-    public function show($view = false, $customController = false, $return = false, $typereturn = false, $customLayout = false)
+    public function show($view = false, $customController = false, $return = false, $typereturn = false, $customLayout = false, $forceAddons = false)
     {
         if (!isset($view) || !is_string($view)) {
-            if (self::$isAddons) {
+            if (self::$isAddons || $forceAddons === true) {
                 // para Addons se debe indicar el nombre de view a mostrar siempre
                 throw new \Exception('Error View Addons');
             } else {
@@ -150,7 +150,7 @@ final class View extends \Smarty
         $absoluteView = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.$viewController;
 
         // Change for Addons
-        if (self::$isAddons) {
+        if (self::$isAddons || $forceAddons === true) {
             $path_view = BASE_URL_APPS.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
             $path_static_view = BASE_URL_APPS_STATIC.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
             $absoluteView = ADDONS_PATH.$viewController.DS.VIEWS_FOLDER;

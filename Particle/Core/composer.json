@@ -3,7 +3,7 @@
         "smarty/smarty": "dev-master",
         "vlucas/spot2": "dev-master",
         "phpfastcache/phpfastcache": "dev-master",
-        "sobstel/sesshin": "1.2.0"
+        "sobstel/sesshin": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "7.2.4",
