@@ -114,8 +114,12 @@ final class Security
 
     final public static function validateDate($date, $format = 'Y-m-d')
     {
-        $d = \DateTime::createFromFormat($format, $date);
-        return $d && $d->format($format) == $date;
+        $dateTime = \DateTime::createFromFormat($format, $date);
+        $errors = \DateTime::getLastErrors();
+        if (!empty($errors['warning_count'])) {
+            return false;
+        }
+        return $dateTime !== false;
     }
 
     final public static function checkDateRange($start_date, $end_date, $evaluame)

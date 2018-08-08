@@ -23,6 +23,7 @@ final class View extends \Smarty
     private static $jsHead;
 
     private static $cssLayout;
+    private static $cssImages;
     private static $jsLayout;
     private static $jsHeadLayout;
     private static $sCurrAssetName;
@@ -70,16 +71,19 @@ final class View extends \Smarty
             $this->caching = false;
         }
 
+        self::$isAddons = $isAddons;
+
         self::$controller = $controller;
         self::$method = $method;
         self::$cacheKey = $cacheKey;
-        self::$isAddons = $isAddons;
+
 
         self::$css = array();
         self::$js = array();
         self::$jsHead = array();
 
         self::$cssLayout = array();
+        self::$cssImages = array();
         self::$jsLayout = array();
         self::$jsHeadLayout = array();
         self::$sCurrAssetName = 'default';
@@ -95,7 +99,6 @@ final class View extends \Smarty
                 $view = self::$method;
             }
         }
-
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
@@ -105,6 +108,8 @@ final class View extends \Smarty
         $aCSS = array();
         $aJS = array();
         $aJSHead = array();
+
+        $aCSSImages = array();
 
         $aCSSLayout = array();
         $aJSLayout = array();
@@ -127,6 +132,10 @@ final class View extends \Smarty
 
         if (count(self::$cssLayout)) {
             $aCSSLayout = self::$cssLayout;
+        }
+
+        if (count(self::$cssImages)) {
+            $aCSSImages = self::$cssImages;
         }
 
         if (count(self::$jsLayout)) {
@@ -176,12 +185,14 @@ final class View extends \Smarty
         }
 
         $_params = array(
+            'path_layout_dir' => $pathLayoutFile,
             'path_layout' => $pathLayoutURL,
             'path_static_layout' => $pathStaticLayoutURL,
             'css' => $aCSS,
             'js' => $aJS,
             'jsHead' => $aJSHead,
             'cssLayout' => $aCSSLayout,
+            'cssImages' => $aCSSImages,
             'jsLayout' => $aJSLayout,
             'jsHeadLayout' => $aJSHeadLayout,
             'extraTplJS' => $extraTplJS,
@@ -210,9 +221,26 @@ final class View extends \Smarty
                 $this->assign('varGlobalToJs', VARGLOBALJS);
             }
 
-            $sHeader = $this->fetch('header.tpl', self::$cacheKey);
-            $sMenuTop = $this->fetch('menu-top.tpl', self::$cacheKey);
-            $sFooter = $this->fetch('footer.tpl', self::$cacheKey);
+            if ($typereturn != 'onlyview' && is_readable(PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.'assignLayout.php')) {
+                require_once PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.'assignLayout.php';
+
+                $tmpIsAddons = self::$isAddons;
+
+                $objAssignLayout = new \Particle\Apps\Views\assignLayout;
+                $arrLayoutSmarty = $objAssignLayout->procesar();
+
+                self::$isAddons = $tmpIsAddons;
+
+                if (!empty($arrLayoutSmarty) && is_array($arrLayoutSmarty)) {
+                    foreach ($arrLayoutSmarty as $strKey => $arrValue) {
+                        $this->assign($strKey, $arrValue);
+                    }
+                }
+
+                $sHeader = $this->fetch('header.tpl', self::$cacheKey);
+                $sMenuTop = $this->fetch('menu-top.tpl', self::$cacheKey);
+                $sFooter = $this->fetch('footer.tpl', self::$cacheKey);
+            }
 
             $sView = $this->fetch($pathView, self::$cacheKey);
 
@@ -244,7 +272,7 @@ final class View extends \Smarty
                         echo $sHeader.$sMenuTop.$sView.$sFooter;
                         break;
                 }
-                exit();
+                //exit();
             } else {
                 switch ($typereturn) {
                     case 'full':
@@ -262,7 +290,7 @@ final class View extends \Smarty
                 }
             }
         } else {
-            throw new \Exception('Error PATH View');
+            throw new \Exception('Error PATH View: '. $pathView);
         }
     }
 
@@ -293,6 +321,9 @@ final class View extends \Smarty
         // CSS Layout
         if (!empty($aCssFileLayout) && is_array($aCssFileLayout)) {
             foreach ($aCssFileLayout as $key => $fileCss) {
+                if (empty($fileCss)) {
+                    continue;
+                }
                 $pathCssLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/css/'.$fileCss;
                 array_unshift(self::$cssLayout, $pathCssLayout);
             }
@@ -300,6 +331,9 @@ final class View extends \Smarty
         // JS Header Layout
         if (!empty($aJsFileHeadLayout) && is_array($aJsFileHeadLayout)) {
             foreach ($aJsFileHeadLayout as $key => $fileJsHead) {
+                if (empty($fileJsHead)) {
+                    continue;
+                }
                 $pathJsHeadLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsHead;
                 array_unshift(self::$jsHeadLayout, $pathJsHeadLayout);
             }
@@ -307,6 +341,9 @@ final class View extends \Smarty
         // JS Footer Layout
         if (!empty($aJsFileFooterLayout) && is_array($aJsFileFooterLayout)) {
             foreach ($aJsFileFooterLayout as $key => $fileJsFooter) {
+                if (empty($fileJsFooter)) {
+                    continue;
+                }
                 $pathJsFooterLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsFooter;
                 array_unshift(self::$jsLayout, $pathJsFooterLayout);
             }
@@ -315,7 +352,7 @@ final class View extends \Smarty
         return true;
     }
 
-    public function setJs(array $js, $head = false, $customController = false, $checkUrl = false)
+    public function setJs(array $js, $head = false, $customController = false, $checkUrl = false, $forceAddons = false)
     {
         if (is_string($customController)) {
             $viewController = $customController;
@@ -323,14 +360,20 @@ final class View extends \Smarty
             $viewController = self::$controller;
         }
 
+        $absoluteView = VIEWS_FOLDER.DS.$viewController;
+
+        if (self::$isAddons || $forceAddons === true) {
+            $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
+        }
+
         $countJs = count($js);
 
         if (is_array($js) && $countJs) {
             for ($i = 0; $i < $countJs; ++$i) {
                 if ($head) {
-                    self::$jsHead[] = VIEWS_FOLDER.'/'.$viewController.'/js/'.$js[$i];
+                    self::$jsHead[] = $absoluteView.'/js/'.$js[$i];
                 } else {
-                    self::$js[] = VIEWS_FOLDER.'/'.$viewController.'/js/'.$js[$i];
+                    self::$js[] = $absoluteView.'/js/'.$js[$i];
                 }
             }
         } else {
@@ -357,12 +400,12 @@ final class View extends \Smarty
         $joinJsFileHeadLayout = $this->joinFile(self::$jsHeadLayout, '.js', 'layoutHead-'.$sAssetName);
         $joinJsFileLayout = $this->joinFile(self::$jsLayout, '.js', 'layout-'.$sAssetName);
 
+        self::$jsHeadLayout = array();
         if (isset($joinJsFileHeadLayout) && $joinJsFileHeadLayout != false) {
-            self::$jsHeadLayout = array();
             self::$jsHeadLayout[] = $joinJsFileHeadLayout;
         }
+        self::$jsLayout = array();
         if (isset($joinJsFileLayout) && $joinJsFileLayout != false) {
-            self::$jsLayout = array();
             self::$jsLayout[] = $joinJsFileLayout;
         }
 
@@ -390,32 +433,32 @@ final class View extends \Smarty
         $joinJsFileHead = $this->joinFile(self::$jsHead, '.js', $viewController.$viewMethod.'Head');
         $joinJsFile = $this->joinFile(self::$js, '.js', $viewController.$viewMethod);
 
+        self::$jsHead = array();
         if (isset($joinJsFileHead) && $joinJsFileHead != false) {
-            self::$jsHead = array();
             self::$jsHead[] = $joinJsFileHead;
         }
+        self::$js = array();
         if (isset($joinJsFile) && $joinJsFile != false) {
-            self::$js = array();
             self::$js[] = $joinJsFile;
         }
     }
 
     public function createTmpCss($sAssetName = null, $customController = null, $customMethod = null)
     {
+        if (empty($sAssetName)) {
+            $sAssetName = self::$sCurrAssetName;
+        }
+
         /* Layout join css */
 
         if (!is_array(self::$cssLayout)) {
             self::$cssLayout = array();
         }
 
-        if (empty($sAssetName)) {
-            $sAssetName = self::$sCurrAssetName;
-        }
-
         $joinCssFileLayout = $this->joinFile(self::$cssLayout, '.css', 'layout-'.$sAssetName);
 
+        self::$cssLayout = array(); // reset no join css
         if (isset($joinCssFileLayout) && $joinCssFileLayout != false) {
-            self::$cssLayout = array(); // reset no join css
             self::$cssLayout[] = $joinCssFileLayout; // add join css
         }
 
@@ -433,14 +476,29 @@ final class View extends \Smarty
             $viewMethod = self::$method;
         }
 
+        /* CSS custom images */
+
+        if (!is_array(self::$cssImages)) {
+            self::$cssImages = array();
+        }
+
+        $joinCssFileImages = $this->joinFile(self::$cssImages, '.css', 'images-'.$viewController.$viewMethod);
+
+        self::$cssImages = array(); // reset no join css
+        if (isset($joinCssFileImages) && $joinCssFileImages != false) {
+            self::$cssImages[] = $joinCssFileImages; // add join css
+        }
+
+        /* CSS custom */
+
         if (!is_array(self::$css)) {
             self::$css = array();
         }
 
         $joinCssFile = $this->joinFile(self::$css, '.css', $viewController.$viewMethod);
 
+        self::$css = array(); // reset no join css
         if (isset($joinCssFile) && $joinCssFile != false) {
-            self::$css = array(); // reset no join css
             self::$css[] = $joinCssFile; // add join css
         }
 
@@ -477,7 +535,7 @@ final class View extends \Smarty
         }
     }
 
-    public function setCss(array $css, $customController = false, $checkUrl = false)
+    public function setCss(array $css, $customController = false, $checkUrl = false, $forceAddons = false)
     {
         if (is_string($customController)) {
             $viewController = $customController;
@@ -485,9 +543,38 @@ final class View extends \Smarty
             $viewController = self::$controller;
         }
 
+        $absoluteView = VIEWS_FOLDER.DS.$viewController;
+
+        if (self::$isAddons || $forceAddons === true) {
+            $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
+        }
+
         if (is_array($css) && count($css)) {
             for ($i = 0; $i < count($css); ++$i) {
-                self::$css[] = VIEWS_FOLDER.'/'.$viewController.'/css/'.$css[$i];
+                self::$css[] = $absoluteView.'/css/'.$css[$i];
+            }
+        } else {
+            throw new \Exception('Error CSS');
+        }
+    }
+
+    public function setCssImages(array $css, $customController = false, $checkUrl = false, $forceAddons = false)
+    {
+        if (is_string($customController)) {
+            $viewController = $customController;
+        } else {
+            $viewController = self::$controller;
+        }
+
+        $absoluteView = VIEWS_FOLDER.DS.$viewController;
+
+        if (self::$isAddons || $forceAddons === true) {
+            $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
+        }
+
+        if (is_array($css) && count($css)) {
+            for ($i = 0; $i < count($css); ++$i) {
+                self::$cssImages[] = $absoluteView.'/css/'.$css[$i];
             }
         } else {
             throw new \Exception('Error CSS');
@@ -677,7 +764,11 @@ final class View extends \Smarty
             return false;
         }
 
-        return $urlPublic;
+        if (file_exists($returnNewFile)) {
+            return $urlPublic;
+        }
+
+        return false;
         // ES FUNDAMENTAL LA SEGURIDAD EN ESTE PROGRAMA //
     }
 

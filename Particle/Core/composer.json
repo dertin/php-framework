@@ -1,7 +1,7 @@
 {
     "require": {
         "smarty/smarty": "dev-master",
-        "vlucas/spot2": "dev-master",
+        "vlucas/spot2": "2.2.0",
         "phpfastcache/phpfastcache": "dev-master",
         "sobstel/sesshin": "dev-master"
     },
@@ -9,5 +9,10 @@
         "phpunit/phpunit": "7.2.4",
         "sempro/phpunit-pretty-print": "dev-master",
         "guzzlehttp/guzzle": "~6.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
     }
+
 }

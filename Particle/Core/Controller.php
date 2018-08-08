@@ -40,7 +40,6 @@ abstract class Controller extends Core\SpotLoad
     final protected static function loadViewAddons()
     {
         self::$currentAddons = Core\App::getInstance()->getAppCurrentAddons();
-
         return new \Particle\Core\View(self::$currentAddons, 'index', false, true);
     }
 

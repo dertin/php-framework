@@ -111,7 +111,7 @@ final class Request
                 throw new \Exception('Error XML Mapping');
             }
 
-            $xmlData = json_decode(json_encode((array) $simplexml_load_file), 1);
+            $xmlData = json_decode(json_encode((array) $simplexml_load_file), true);
 
             if ($xmlData) {
                 return $xmlData;

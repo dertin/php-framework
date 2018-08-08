@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mapping>
-  <!--
-    <rule name="alfanum">
-        <splitter></splitter>
-        <space></space>
-        <ignore></ignore>
-        <ignorepreg>/[^0-9a-z]/</ignorepreg>
-    </rule>
+<!--
+  <rule name="alfanum">
+      <splitter></splitter>
+      <space></space>
+      <ignore></ignore>
+      <ignorepreg>/[^a-z0-9-]/</ignorepreg>
+  </rule>
 
-    <url request="/test/*" rule="alfanum" argumentname="rubro" jsonlist="rubros" wildcard="*">
-        <controller>index</controller>
-        <method>testXml</method>
-    </url>
+  <url request="/*" rule="alfanum" argumentname="rubro" jsonlist="rubros" wildcard="*">
+      <controller>testing</controller>
+      <method>index</method>
+  </url>
 
-    <url request="/test/*/*" rule="alfanum|alfanum" argumentname="rubro|departamento" jsonlist="rubros|null" wildcard="*">
-        <controller>index</controller>
-        <method>testXml</method>
-    </url>
+  <url request="/*/*" rule="alfanum|alfanum" argumentname="rubro|departamento" jsonlist="rubros|null" wildcard="*">
+      <controller>testing</controller>
+      <method>index</method>
+  </url>
 
-    <url request="/test/*/*/*" rule="alfanum|alfanum|alfanum" argumentname="rubro|departamento|barrio" jsonlist="rubros|null|null" wildcard="*">
-        <controller>index</controller>
-        <method>testXml</method>
-    </url>
-  -->
+  <url request="/*/*/*" rule="alfanum|alfanum|alfanum" argumentname="rubro|departamento|ciudad" jsonlist="rubros|null|null" wildcard="*">
+      <controller>testing</controller>
+      <method>index</method>
+  </url>
+
+  <url request="/*/*/*/*" rule="alfanum|alfanum|alfanum|alfanum" argumentname="rubro|departamento|ciudad|barrio" jsonlist="rubros|null|null|null" wildcard="*">
+      <controller>testing</controller>
+      <method>index</method>
+  </url>
+
+  <url request="/terminos-y-condiciones">
+      <controller>terminosycondiciones</controller>
+      <method>index</method>
+  </url>
+-->
 </mapping>
