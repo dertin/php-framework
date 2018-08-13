@@ -213,9 +213,7 @@ final class View extends \Smarty
             $this->setTemplateDir($pathLayoutFile);
             $this->addTemplateDir($absoluteView, 'currentview');
 
-            if (!$this->isCached('header.tpl', self::$cacheKey) || !$this->isCached('footer.tpl', self::$cacheKey)) {
-                $this->assign('_layoutParams', $_params);
-            }
+            $this->assign('_layoutParams', $_params);
 
             if (defined('VARGLOBALJS')) {
                 $this->assign('varGlobalToJs', VARGLOBALJS);
@@ -272,7 +270,6 @@ final class View extends \Smarty
                         echo $sHeader.$sMenuTop.$sView.$sFooter;
                         break;
                 }
-                //exit();
             } else {
                 switch ($typereturn) {
                     case 'full':
