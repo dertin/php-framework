@@ -199,8 +199,8 @@ final class View extends \Smarty
             'extraTplJSTop' => $extraTplJSTop,
             'home' => HOME_URL,
             'home_static' => HOME_URL_STATIC,
-            'public' => BASE_URL_APPS.'public/',
-            'public_static' => BASE_URL_APPS_STATIC.'public/',
+            'public' => PUBLIC_URL,
+            'public_static' => PUBLIC_URL_STATIC,
             'controller' => $viewController,
             'tplname' => $view,
             'path_view' => $path_view,
@@ -625,10 +625,8 @@ final class View extends \Smarty
             return false;
         }
 
-        $BASE_DIR_APPS = PARTICLE_PATH_APPS;
-
-        $returnNewFile = $BASE_DIR_APPS.'public'.DS.'tmp'.DS.$outName.$ext;
-        $urlPublic = BASE_URL_APPS_STATIC.'public/tmp/'.$outName.$ext;
+        $returnNewFile = PUBLIC_PATH.'tmp'.DS.$outName.$ext;
+        $urlPublic = PUBLIC_URL_STATIC.'tmp/'.$outName.$ext;
 
         if (file_exists($returnNewFile)) {
             return $urlPublic;
@@ -637,7 +635,7 @@ final class View extends \Smarty
         $jsCss_code = null;
 
         foreach ($aFileOpen as $dirFile) {
-            $dirFileFull = $BASE_DIR_APPS.$dirFile.$ext;
+            $dirFileFull = PARTICLE_PATH_APPS.$dirFile.$ext;
             if (file_exists($dirFileFull)) {
                 $file_handle = fopen($dirFileFull, 'r');
                 while (!feof($file_handle)) {

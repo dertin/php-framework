@@ -23,7 +23,7 @@ abstract class Controller extends Core\SpotLoad
     private static $controller;
     private static $method;
 
-    public function __construct()
+    public function __construct($noLoadView = false)
     {
         parent::__construct(); // init $spotInstance
         //$this->spot = parent::$spotInstance;
@@ -34,7 +34,10 @@ abstract class Controller extends Core\SpotLoad
         $this->args = Core\App::getInstance()->getAppArgs();
 
         $cacheKey = Core\App::getInstance()->getAppRequest(); // $cacheKey
-        $this->view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
+
+        if (!$noLoadView) {
+            $this->view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
+        }
     }
 
     final protected static function loadViewAddons()

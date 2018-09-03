@@ -43,10 +43,6 @@ class SpotLoad
               'path' => sys_get_temp_dir(), // or in windows "C:/tmp/"
             ]));
             self::$spotCache = CacheManager::getInstance('files');
-            // CacheManager::setDefaultConfig([
-            //   "path" => '/home/g203906/securecache',
-            // ]);
-            // self::$spotCache = @CacheManager::getInstance('files');
         }
     }
 

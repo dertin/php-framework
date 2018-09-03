@@ -13,7 +13,7 @@ define('MAPPING_PATH', PARTICLE_PATH_APPS.'Router'.DS.'default.xml');
 define('DEFAULT_CONTROLLER', 'index');
 define('DEFAULT_METHOD', 'index');
 define('DEFAULT_LAYOUT', 'default');
-define('APPS_PUBLIC_IMG_PATH', PARTICLE_PATH_APPS.'public'.DS.'img'.DS);
+define('PUBLIC_IMG_PATH', PUBLIC_PATH.'images'.DS);
 define('SMARTY_CACHE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'cache-smarty'.DS);
 define('SMARTY_COMPILE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'template-compiler-smarty'.DS);
 define('SMARTY_CONFIG_DIR', PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS.'configs-smarty'.DS.NAMEHOST.DS);
@@ -23,6 +23,8 @@ define('HOME_URL', 'https://localhost/');
 define('HOME_URL_STATIC', 'https://localhost/');
 define('BASE_URL_APPS', HOME_URL.FRAMEWORK_FOLDER.DS.APPS_FOLDER.DS);
 define('BASE_URL_APPS_STATIC', HOME_URL_STATIC.FRAMEWORK_FOLDER.DS.APPS_FOLDER.DS);
+define('PUBLIC_URL', HOME_URL.'public/');
+define('PUBLIC_URL_STATIC', HOME_URL_STATIC.'public/');
 
 /* DOCTYPE AND CHARSET */
 define('CHARSET', 'UTF-8'); // ISO-8859-1
