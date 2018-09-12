@@ -19,34 +19,34 @@ abstract class Controller extends Core\SpotLoad
     protected $args = null;
     protected $spot = null;
 
-    private static $currentAddons;
-    private static $controller;
-    private static $method;
+    private $currentAddons;
+    private $controller;
+    private $method;
 
     public function __construct($noLoadView = false)
     {
         parent::__construct(); // init $spotInstance
         //$this->spot = parent::$spotInstance;
 
-        self::$controller = Core\App::getInstance()->getAppController();
-        self::$method = Core\App::getInstance()->getAppMethod();
+        $this->controller = Core\App::getInstance()->getAppController();
+        $this->method = Core\App::getInstance()->getAppMethod();
 
         $this->args = Core\App::getInstance()->getAppArgs();
 
         $cacheKey = Core\App::getInstance()->getAppRequest(); // $cacheKey
 
         if (!$noLoadView) {
-            $this->view = new \Particle\Core\View(self::$controller, self::$method, $cacheKey, false);
+            $this->view = new \Particle\Core\View($this->controller, $this->method, $cacheKey, false);
         }
     }
 
-    final protected static function loadViewAddons()
+    final protected function loadViewAddons()
     {
-        self::$currentAddons = Core\App::getInstance()->getAppCurrentAddons();
-        return new \Particle\Core\View(self::$currentAddons, 'index', false, true);
+        $this->currentAddons = Core\App::getInstance()->getAppCurrentAddons();
+        return new \Particle\Core\View($this->currentAddons, 'index', false, true);
     }
 
-    final protected static function loadAddons($addons_name = false, $noException = false)
+    final protected function loadAddons($addons_name = false, $noException = false)
     {
         $classPlugin = $addons_name.'Addons';
 

@@ -36,7 +36,7 @@ final class Cookies
      * @param string $value Value of the cookie. Destroy the cookie if omitted or null
      * @param int $duration Life time of the cookie. Uses default value if omitted or null
      */
-    public static function write($name, $value = null, $duration = 0)
+    public static function write($name, $value = null, $duration = 0, $httponly = true)
     {
         if (!isset($value)) {
             return self::delete($name);
@@ -45,7 +45,6 @@ final class Cookies
         $domain=ini_get('session.cookie_domain');
         $path=ini_get('session.cookie_path');
         $secure=isset($_SERVER['HTTPS']);
-        $httponly=true;
 
         // Expiration date from the life time in seconds
         if ($duration==0) {

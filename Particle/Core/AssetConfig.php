@@ -16,12 +16,13 @@ final class AssetConfig
         return self::$instance;
     }
 
-    final private function add($sAssetName, $aCssFileLayout, $aJsFileHeadLayout, $aJsFileFooterLayout)
+    final private function add($sAssetName, $aCssFileLayout, $aJsFileHeadLayout, $aJsFileFooterLayout, $aPHPFileLayout)
     {
         $this->AssetConfig[$sAssetName] = array(
           'aCssFileLayout' => $aCssFileLayout,
           'aJsFileHeadLayout' => $aJsFileHeadLayout,
           'aJsFileFooterLayout' => $aJsFileFooterLayout,
+          'aPHPFileLayout' => $aPHPFileLayout
         );
     }
 
@@ -48,12 +49,16 @@ final class AssetConfig
             if (!isset($itemAsset['aJsFileFooterLayout']) || empty($itemAsset['aJsFileFooterLayout'])) {
                 $itemAsset['aJsFileFooterLayout'] = array();
             }
+            if (!isset($itemAsset['aPHPFileLayout']) || empty($itemAsset['aPHPFileLayout'])) {
+                $itemAsset['aPHPFileLayout'] = array();
+            }
 
             $aCssFileLayout = $itemAsset['aCssFileLayout'];
             $aJsFileHeadLayout = $itemAsset['aJsFileHeadLayout'];
             $aJsFileFooterLayout = $itemAsset['aJsFileFooterLayout'];
+            $aPHPFileLayout = $itemAsset['aPHPFileLayout'];
 
-            $this->add($sAssetName, $aCssFileLayout, $aJsFileHeadLayout, $aJsFileFooterLayout);
+            $this->add($sAssetName, $aCssFileLayout, $aJsFileHeadLayout, $aJsFileFooterLayout, $aPHPFileLayout);
         }
 
         return true;

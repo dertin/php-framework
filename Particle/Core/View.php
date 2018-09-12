@@ -14,24 +14,26 @@ use Particle\Core;
 
 final class View extends \Smarty
 {
-    private static $controller; // or name Addons
-    private static $method;
-    private static $cacheKey;
+    private $controller; // or name Addons
+    private $method;
+    private $cacheKey;
 
-    private static $css;
-    private static $js;
-    private static $jsHead;
+    private $css;
+    private $js;
+    private $jsHead;
 
-    private static $cssLayout;
-    private static $cssImages;
-    private static $jsLayout;
-    private static $jsHeadLayout;
-    private static $sCurrAssetName;
+    private $cssLayout;
+    private $cssImages;
+    private $jsLayout;
+    private $jsHeadLayout;
+    private $extraTplJS;
+    private $extraTplJSTop;
+    private $phpLayout;
 
-    private static $extraTplJS;
-    private static $extraTplJSTop;
+    private $sCurrAssetName;
+    private $sCurrLayoutName;
 
-    private static $isAddons;
+    private $isAddons;
 
     public function __construct($controller, $method, $cacheKey = false, $isAddons = false)
     {
@@ -41,7 +43,7 @@ final class View extends \Smarty
 
         $cacheDir = PARTICLE_PATH_CORE.'tmp'.DS.'cache-smarty'.DS;
         $compileDir = PARTICLE_PATH_CORE.'tmp'.DS.'template-compiler-smarty'.DS;
-        $configDir = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS.'configs-smarty'.DS.NAMEHOST.DS;
+        $configDir = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.'configs-smarty'.DS.NAMEHOST.DS;
 
         $this->setCompileDir($compileDir);
         $this->setConfigDir($configDir);
@@ -71,38 +73,29 @@ final class View extends \Smarty
             $this->caching = false;
         }
 
-        self::$isAddons = $isAddons;
+        $this->isAddons = $isAddons;
 
-        self::$controller = $controller;
-        self::$method = $method;
-        self::$cacheKey = $cacheKey;
+        $this->controller = $controller;
+        $this->method = $method;
+        $this->cacheKey = $cacheKey;
 
-
-        self::$css = array();
-        self::$js = array();
-        self::$jsHead = array();
-
-        self::$cssLayout = array();
-        self::$cssImages = array();
-        self::$jsLayout = array();
-        self::$jsHeadLayout = array();
-        self::$sCurrAssetName = 'default';
+        $this->clearSettings();
     }
 
-    public function show($view = false, $customController = false, $return = false, $typereturn = false, $customLayout = false, $forceAddons = false)
+    public function show($view = false, $customController = false, $return = false, $typereturn = false, $customLayout = false, $forceAddons = false, $forcePHPLayout = false)
     {
         if (!isset($view) || !is_string($view)) {
-            if (self::$isAddons || $forceAddons === true) {
+            if ($this->isAddons || $forceAddons === true) {
                 // para Addons se debe indicar el nombre de view a mostrar siempre
                 throw new \Exception('Error View Addons');
             } else {
-                $view = self::$method;
+                $view = $this->method;
             }
         }
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
 
         $aCSS = array();
@@ -114,44 +107,53 @@ final class View extends \Smarty
         $aCSSLayout = array();
         $aJSLayout = array();
         $aJSHeadLayout = array();
+        $aPHPLayout = array();
 
         $extraTplJS = '';
         $extraTplJSTop = '';
 
-        if (count(self::$css)) {
-            $aCSS = self::$css;
+        if (count($this->css)) {
+            $aCSS = $this->css;
         }
 
-        if (count(self::$js)) {
-            $aJS = self::$js;
+        if (count($this->js)) {
+            $aJS = $this->js;
         }
 
-        if (count(self::$jsHead)) {
-            $aJSHead = self::$jsHead;
+        if (count($this->jsHead)) {
+            $aJSHead = $this->jsHead;
         }
 
-        if (count(self::$cssLayout)) {
-            $aCSSLayout = self::$cssLayout;
+        if (count($this->cssLayout)) {
+            $aCSSLayout = $this->cssLayout;
         }
 
-        if (count(self::$cssImages)) {
-            $aCSSImages = self::$cssImages;
+        if (count($this->cssImages)) {
+            $aCSSImages = $this->cssImages;
         }
 
-        if (count(self::$jsLayout)) {
-            $aJSLayout = self::$jsLayout;
+        if (count($this->jsLayout)) {
+            $aJSLayout = $this->jsLayout;
         }
 
-        if (count(self::$jsHeadLayout)) {
-            $aJSHeadLayout = self::$jsHeadLayout;
+        if (count($this->jsHeadLayout)) {
+            $aJSHeadLayout = $this->jsHeadLayout;
         }
 
-        if (!empty(self::$extraTplJS)) {
-            $extraTplJS = self::$extraTplJS;
+        if (count($this->phpLayout)) {
+            $aPHPLayout = $this->phpLayout;
         }
 
-        if (!empty(self::$extraTplJSTop)) {
-            $extraTplJSTop = self::$extraTplJSTop;
+        if (!empty($this->extraTplJS)) {
+            $extraTplJS = $this->extraTplJS;
+        }
+
+        if (!empty($this->extraTplJSTop)) {
+            $extraTplJSTop = $this->extraTplJSTop;
+        }
+
+        if (empty($customLayout)) {
+            $customLayout = $this->sCurrLayoutName;
         }
 
         $path_view = BASE_URL_APPS.VIEWS_FOLDER.'/'.$viewController;
@@ -159,7 +161,7 @@ final class View extends \Smarty
         $absoluteView = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.$viewController;
 
         // Change for Addons
-        if (self::$isAddons || $forceAddons === true) {
+        if ($this->isAddons || $forceAddons === true) {
             $path_view = BASE_URL_APPS.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
             $path_static_view = BASE_URL_APPS_STATIC.ADDONS_FOLDER.'/'.$viewController.'/'.VIEWS_FOLDER.'/';
             $absoluteView = ADDONS_PATH.$viewController.DS.VIEWS_FOLDER;
@@ -168,15 +170,12 @@ final class View extends \Smarty
         $pathView = $absoluteView.DS.$view.'.tpl';
 
         if (!empty($customLayout)) {
-            // custom layout
             $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layout/'.$customLayout;
             $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layout/'.$customLayout;
             $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.$customLayout.DS;
         } else {
-            // layout frontend
-            $pathLayoutURL = BASE_URL_APPS.VIEWS_FOLDER.'/layout/'.DEFAULT_LAYOUT;
-            $pathStaticLayoutURL = BASE_URL_APPS_STATIC.VIEWS_FOLDER.'/layout/'.DEFAULT_LAYOUT;
-            $pathLayoutFile = PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS;
+            Core\Debug::savelogfile(2, 'Error View Layout', 'The layout name was not found');
+            throw new \Exception('Error: The layout name was not found');
         }
 
         if (!is_dir($pathLayoutFile)) {
@@ -219,28 +218,34 @@ final class View extends \Smarty
                 $this->assign('varGlobalToJs', VARGLOBALJS);
             }
 
-            if ($typereturn != 'onlyview' && is_readable(PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.'assignLayout.php')) {
-                require_once PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.'assignLayout.php';
+            if (($typereturn != 'onlyview' || $forcePHPLayout === true) && !empty($aPHPLayout)) {
+                foreach ($aPHPLayout as $namePHPFile) {
+                    if (is_readable($pathLayoutFile.'php'.DS.$namePHPFile.'.php')) {
+                        require_once $pathLayoutFile.'php'.DS.$namePHPFile.'.php';
 
-                $tmpIsAddons = self::$isAddons;
+                        $tmpIsAddons = $this->isAddons;
+                        $classPHPLayout = '\Particle\Apps\Views\\'.$namePHPFile;
+                        $objAssignLayout = new $classPHPLayout;
+                        $arrLayoutSmarty = $objAssignLayout->procesar();
 
-                $objAssignLayout = new \Particle\Apps\Views\assignLayout;
-                $arrLayoutSmarty = $objAssignLayout->procesar();
+                        $this->isAddons = $tmpIsAddons;
 
-                self::$isAddons = $tmpIsAddons;
-
-                if (!empty($arrLayoutSmarty) && is_array($arrLayoutSmarty)) {
-                    foreach ($arrLayoutSmarty as $strKey => $arrValue) {
-                        $this->assign($strKey, $arrValue);
+                        if (!empty($arrLayoutSmarty) && is_array($arrLayoutSmarty)) {
+                            foreach ($arrLayoutSmarty as $strKey => $arrValue) {
+                                $this->assign($strKey, $arrValue);
+                            }
+                        }
                     }
                 }
-
-                $sHeader = $this->fetch('header.tpl', self::$cacheKey);
-                $sMenuTop = $this->fetch('menu-top.tpl', self::$cacheKey);
-                $sFooter = $this->fetch('footer.tpl', self::$cacheKey);
             }
 
-            $sView = $this->fetch($pathView, self::$cacheKey);
+            if ($typereturn != 'onlyview') {
+                $sHeader = $this->fetch('header.tpl', $this->cacheKey);
+                $sMenuTop = $this->fetch('menu-top.tpl', $this->cacheKey);
+                $sFooter = $this->fetch('footer.tpl', $this->cacheKey);
+            }
+
+            $sView = $this->fetch($pathView, $this->cacheKey);
 
             if ($return == false) {
                 if (OUTPUT_CONTROL) {
@@ -293,27 +298,39 @@ final class View extends \Smarty
 
     public function clearSettings()
     {
-        self::$css = array();
-        self::$js = array();
-        self::$jsHead = array();
-        self::$extraTplJS = array();
-        self::$extraTplJSTop = array();
-        self::$sCurrAssetName = 'default';
+        $this->css = array();
+        $this->js = array();
+        $this->jsHead = array();
+        $this->extraTplJS = array();
+        $this->extraTplJSTop = array();
+
+        $this->cssLayout = array();
+        $this->cssImages = array();
+        $this->jsLayout = array();
+        $this->jsHeadLayout = array();
+        $this->phpLayout = array();
+        $this->sCurrAssetName = DEFAULT_LAYOUT;
+        $this->sCurrLayoutName = DEFAULT_LAYOUT;
     }
 
-    public function setCssJsLayout($sAssetName = 'default', $layoutName = 'default')
+    public function setCssJsLayout($layoutName = DEFAULT_LAYOUT, $sAssetName = false)
     {
+        if (empty($sAssetName)) {
+            $sAssetName = $layoutName;
+        }
         $aAssetConfig = AssetConfig::getInstance()->getAssetConfig($sAssetName);
 
         if (!isset($aAssetConfig['aCssFileLayout']) || !isset($aAssetConfig['aJsFileHeadLayout']) || !isset($aAssetConfig['aJsFileFooterLayout'])) {
             return false;
         }
 
-        self::$sCurrAssetName = $sAssetName;
+        $this->sCurrLayoutName = $layoutName;
+        $this->sCurrAssetName = $sAssetName;
 
         $aCssFileLayout = $aAssetConfig['aCssFileLayout'];
         $aJsFileHeadLayout= $aAssetConfig['aJsFileHeadLayout'];
         $aJsFileFooterLayout = $aAssetConfig['aJsFileFooterLayout'];
+        $aPHPFileLayout = $aAssetConfig['aPHPFileLayout'];
 
         // CSS Layout
         if (!empty($aCssFileLayout) && is_array($aCssFileLayout)) {
@@ -322,7 +339,7 @@ final class View extends \Smarty
                     continue;
                 }
                 $pathCssLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/css/'.$fileCss;
-                array_unshift(self::$cssLayout, $pathCssLayout);
+                array_unshift($this->cssLayout, $pathCssLayout);
             }
         }
         // JS Header Layout
@@ -332,7 +349,7 @@ final class View extends \Smarty
                     continue;
                 }
                 $pathJsHeadLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsHead;
-                array_unshift(self::$jsHeadLayout, $pathJsHeadLayout);
+                array_unshift($this->jsHeadLayout, $pathJsHeadLayout);
             }
         }
         // JS Footer Layout
@@ -342,7 +359,16 @@ final class View extends \Smarty
                     continue;
                 }
                 $pathJsFooterLayout = VIEWS_FOLDER.'/layout/'.$layoutName.'/js/'.$fileJsFooter;
-                array_unshift(self::$jsLayout, $pathJsFooterLayout);
+                array_unshift($this->jsLayout, $pathJsFooterLayout);
+            }
+        }
+        // PHP Layout
+        if (!empty($aPHPFileLayout) && is_array($aPHPFileLayout)) {
+            foreach ($aPHPFileLayout as $key => $namePHPLayout) {
+                if (empty($namePHPLayout)) {
+                    continue;
+                }
+                array_unshift($this->phpLayout, $namePHPLayout);
             }
         }
 
@@ -354,12 +380,12 @@ final class View extends \Smarty
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
 
         $absoluteView = VIEWS_FOLDER.DS.$viewController;
 
-        if (self::$isAddons || $forceAddons === true) {
+        if ($this->isAddons || $forceAddons === true) {
             $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
         }
 
@@ -368,9 +394,9 @@ final class View extends \Smarty
         if (is_array($js) && $countJs) {
             for ($i = 0; $i < $countJs; ++$i) {
                 if ($head) {
-                    self::$jsHead[] = $absoluteView.'/js/'.$js[$i];
+                    $this->jsHead[] = $absoluteView.'/js/'.$js[$i];
                 } else {
-                    self::$js[] = $absoluteView.'/js/'.$js[$i];
+                    $this->js[] = $absoluteView.'/js/'.$js[$i];
                 }
             }
         } else {
@@ -382,81 +408,81 @@ final class View extends \Smarty
     {
 
       /* Layout join js */
-        if (!is_array(self::$jsHeadLayout)) {
-            self::$jsHeadLayout = array();
+        if (!is_array($this->jsHeadLayout)) {
+            $this->jsHeadLayout = array();
         }
 
-        if (!is_array(self::$jsLayout)) {
-            self::$jsLayout = array();
+        if (!is_array($this->jsLayout)) {
+            $this->jsLayout = array();
         }
 
         if (empty($sAssetName)) {
-            $sAssetName = self::$sCurrAssetName;
+            $sAssetName = $this->sCurrAssetName;
         }
 
-        $joinJsFileHeadLayout = $this->joinFile(self::$jsHeadLayout, '.js', 'layoutHead-'.$sAssetName);
-        $joinJsFileLayout = $this->joinFile(self::$jsLayout, '.js', 'layout-'.$sAssetName);
+        $joinJsFileHeadLayout = $this->joinFile($this->jsHeadLayout, '.js', 'layoutHead-'.$sAssetName);
+        $joinJsFileLayout = $this->joinFile($this->jsLayout, '.js', 'layout-'.$sAssetName);
 
-        self::$jsHeadLayout = array();
+        $this->jsHeadLayout = array();
         if (isset($joinJsFileHeadLayout) && $joinJsFileHeadLayout != false) {
-            self::$jsHeadLayout[] = $joinJsFileHeadLayout;
+            $this->jsHeadLayout[] = $joinJsFileHeadLayout;
         }
-        self::$jsLayout = array();
+        $this->jsLayout = array();
         if (isset($joinJsFileLayout) && $joinJsFileLayout != false) {
-            self::$jsLayout[] = $joinJsFileLayout;
+            $this->jsLayout[] = $joinJsFileLayout;
         }
 
         /* Template join js */
 
-        if (!is_array(self::$jsHead)) {
-            self::$jsHead = array();
+        if (!is_array($this->jsHead)) {
+            $this->jsHead = array();
         }
 
-        if (!is_array(self::$js)) {
-            self::$js = array();
+        if (!is_array($this->js)) {
+            $this->js = array();
         }
 
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
         if (is_string($customMethod)) {
             $viewMethod = $customMethod;
         } else {
-            $viewMethod = self::$method;
+            $viewMethod = $this->method;
         }
 
-        $joinJsFileHead = $this->joinFile(self::$jsHead, '.js', $viewController.$viewMethod.'Head');
-        $joinJsFile = $this->joinFile(self::$js, '.js', $viewController.$viewMethod);
+        $joinJsFileHead = $this->joinFile($this->jsHead, '.js', $viewController.$viewMethod.'Head');
+        $joinJsFile = $this->joinFile($this->js, '.js', $viewController.$viewMethod);
 
-        self::$jsHead = array();
+        $this->jsHead = array();
         if (isset($joinJsFileHead) && $joinJsFileHead != false) {
-            self::$jsHead[] = $joinJsFileHead;
+            $this->jsHead[] = $joinJsFileHead;
         }
-        self::$js = array();
+        $this->js = array();
         if (isset($joinJsFile) && $joinJsFile != false) {
-            self::$js[] = $joinJsFile;
+            $this->js[] = $joinJsFile;
         }
     }
 
     public function createTmpCss($sAssetName = null, $customController = null, $customMethod = null)
     {
         if (empty($sAssetName)) {
-            $sAssetName = self::$sCurrAssetName;
+            $sAssetName = $this->sCurrAssetName;
         }
 
         /* Layout join css */
 
-        if (!is_array(self::$cssLayout)) {
-            self::$cssLayout = array();
+        if (!is_array($this->cssLayout)) {
+            $this->cssLayout = array();
         }
 
-        $joinCssFileLayout = $this->joinFile(self::$cssLayout, '.css', 'layout-'.$sAssetName);
+        $joinCssFileLayout = $this->joinFile($this->cssLayout, '.css', 'layout-'.$sAssetName);
 
-        self::$cssLayout = array(); // reset no join css
+        $this->cssLayout = array(); // reset no join css
         if (isset($joinCssFileLayout) && $joinCssFileLayout != false) {
-            self::$cssLayout[] = $joinCssFileLayout; // add join css
+            $this->cssLayout[] = $joinCssFileLayout; // add join css
         }
 
         /* Template join css */
@@ -464,39 +490,39 @@ final class View extends \Smarty
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
 
         if (is_string($customMethod)) {
             $viewMethod = $customMethod;
         } else {
-            $viewMethod = self::$method;
+            $viewMethod = $this->method;
         }
 
         /* CSS custom images */
 
-        if (!is_array(self::$cssImages)) {
-            self::$cssImages = array();
+        if (!is_array($this->cssImages)) {
+            $this->cssImages = array();
         }
 
-        $joinCssFileImages = $this->joinFile(self::$cssImages, '.css', 'images-'.$viewController.$viewMethod);
+        $joinCssFileImages = $this->joinFile($this->cssImages, '.css', 'images-'.$viewController.$viewMethod);
 
-        self::$cssImages = array(); // reset no join css
+        $this->cssImages = array(); // reset no join css
         if (isset($joinCssFileImages) && $joinCssFileImages != false) {
-            self::$cssImages[] = $joinCssFileImages; // add join css
+            $this->cssImages[] = $joinCssFileImages; // add join css
         }
 
         /* CSS custom */
 
-        if (!is_array(self::$css)) {
-            self::$css = array();
+        if (!is_array($this->css)) {
+            $this->css = array();
         }
 
-        $joinCssFile = $this->joinFile(self::$css, '.css', $viewController.$viewMethod);
+        $joinCssFile = $this->joinFile($this->css, '.css', $viewController.$viewMethod);
 
-        self::$css = array(); // reset no join css
+        $this->css = array(); // reset no join css
         if (isset($joinCssFile) && $joinCssFile != false) {
-            self::$css[] = $joinCssFile; // add join css
+            $this->css[] = $joinCssFile; // add join css
         }
 
         return true;
@@ -509,9 +535,9 @@ final class View extends \Smarty
                 $jsFile = $js[$i];
 
                 if ($head) {
-                    self::$jsHead[] = $jsFile;
+                    $this->jsHead[] = $jsFile;
                 } else {
-                    self::$js[] = $jsFile;
+                    $this->js[] = $jsFile;
                 }
             }
         } else {
@@ -525,7 +551,7 @@ final class View extends \Smarty
             for ($i = 0; $i < count($css); ++$i) {
                 $cssFile = $css[$i];
 
-                self::$css[] = $cssFile;
+                $this->css[] = $cssFile;
             }
         } else {
             throw new \Exception('Error CSS External');
@@ -537,18 +563,18 @@ final class View extends \Smarty
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
 
         $absoluteView = VIEWS_FOLDER.DS.$viewController;
 
-        if (self::$isAddons || $forceAddons === true) {
+        if ($this->isAddons || $forceAddons === true) {
             $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
         }
 
         if (is_array($css) && count($css)) {
             for ($i = 0; $i < count($css); ++$i) {
-                self::$css[] = $absoluteView.'/css/'.$css[$i];
+                $this->css[] = $absoluteView.'/css/'.$css[$i];
             }
         } else {
             throw new \Exception('Error CSS');
@@ -560,18 +586,18 @@ final class View extends \Smarty
         if (is_string($customController)) {
             $viewController = $customController;
         } else {
-            $viewController = self::$controller;
+            $viewController = $this->controller;
         }
 
         $absoluteView = VIEWS_FOLDER.DS.$viewController;
 
-        if (self::$isAddons || $forceAddons === true) {
+        if ($this->isAddons || $forceAddons === true) {
             $absoluteView = ADDONS_FOLDER.DS.$viewController.DS.VIEWS_FOLDER;
         }
 
         if (is_array($css) && count($css)) {
             for ($i = 0; $i < count($css); ++$i) {
-                self::$cssImages[] = $absoluteView.'/css/'.$css[$i];
+                $this->cssImages[] = $absoluteView.'/css/'.$css[$i];
             }
         } else {
             throw new \Exception('Error CSS');
@@ -582,9 +608,9 @@ final class View extends \Smarty
     {
         if (is_string($nameTplJs)) {
             if ($head) {
-                self::$extraTplJSTop = $nameTplJs;
+                $this->extraTplJSTop = $nameTplJs;
             } else {
-                self::$extraTplJS = $nameTplJs;
+                $this->extraTplJS = $nameTplJs;
             }
         } else {
             throw new \Exception('Error Extra TPL Js');
