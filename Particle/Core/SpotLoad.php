@@ -40,7 +40,7 @@ class SpotLoad
         }
         if (!isset(self::$spotCache)) {
             CacheManager::setDefaultConfig(new ConfigurationOption([
-              'path' => sys_get_temp_dir(), // or in windows "C:/tmp/"
+              'path' => sys_get_temp_dir(),
             ]));
             self::$spotCache = CacheManager::getInstance('files');
         }

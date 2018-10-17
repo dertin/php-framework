@@ -8,6 +8,7 @@ ob_implicit_flush(0);
 error_reporting(E_ALL);  // Add strict
 ini_set('display_errors', '1');  // mostrar errores
 
+
 // Constants configuration
 require_once 'config.php';
 configFramework();
@@ -40,7 +41,7 @@ try {
     try {
         $srtExceptionMessage = (string) $e->getMessage();
 
-        if ($srtExceptionMessage === 'ErrorPathController') {
+        if ($srtExceptionMessage === 'ErrorPathController' || $srtExceptionMessage === 'Error404') {
             $sCurrURLFull = Core\Debug::getCurrentUrl();
             $sCurrURLExt = substr(strrchr($sCurrURLFull, '.'), 1);
 

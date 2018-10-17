@@ -13,14 +13,13 @@ final class Debug
 {
     final public static function savelogfile($id, $location, $message, $filename = 'error')
     {
-        //
         // id: Error ID
         // location: Location of the file and line eg. index.php:20
         // message: Error message
         // filename: Log file path
         //
         // Usage: Core\Debug::savelogfile(1, 'index.php:33', 'Mensaje de Error');
-
+        //
         $filename = $_SERVER['DOCUMENT_ROOT'].DS.$filename.'.log';
 
         $file = fopen($filename, 'a');

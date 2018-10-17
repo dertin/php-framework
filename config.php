@@ -11,10 +11,11 @@ function configFramework()
     define('PARTICLE_PATH_CORE', PARTICLE_PATH.CORE_FOLDER.DS);
     define('APPS_FOLDER', 'Apps');
     define('PARTICLE_PATH_APPS', PARTICLE_PATH.APPS_FOLDER.DS);
+    define('PUBLIC_PATH', ROOT.'public'.DS);
 
     /* ROUTING */
     define('DEFAULT_ROUTING', true);
-    define('MAPPING_ROUTING', false);
+    define('MAPPING_ROUTING', true);
     define('STRICT_ROUTING', false);
 
     /* CACHE TPL AND OUTPUT BUFFER */
@@ -30,7 +31,9 @@ function configFramework()
     define('CACHE_DB_PATH', false); // false is default  - sys_get_temp_dir();
 
     define('APPS_SETTINGS_PATH', PARTICLE_PATH_APPS.'Settings'.DS);
-
+    
+    $strSysTempDir = sys_get_temp_dir();
+    define('SYS_TEMP_DIR', $strSysTempDir);
     configApps();
 
     return true;

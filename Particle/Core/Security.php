@@ -534,4 +534,13 @@ final class Security
 
         return $rSaveNewFile;
     }
+
+    final public static function onlyCliOrExit()
+    {
+        $sapi_type = php_sapi_name();
+        if (substr($sapi_type, 0, 3) != 'cli' && !empty($_SERVER['REMOTE_ADDR'])) {
+            exit();
+        }
+        return true;
+    }
 }

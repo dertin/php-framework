@@ -221,11 +221,9 @@ final class Request
 
                     if ($this->compareRequestXMLURL($this->aURLs[$i]['@attributes']['request'], $this->request, $sWildCard, $JsonList)) {
                         $this->flagMapping = true;
-
                         $this->controller = $this->aURLs[$i]['controller'];
-
                         $this->method = $this->aURLs[$i]['method'];
-
+                        
                         if (isset($this->aURLs[$i]['argument']) && !is_null($this->aURLs[$i]['argument'])) {
                             if (isset($this->aURLs[$i]['argument']['value'])) {
                                 if (isset($this->aURLs[$i]['argument']['@attributes']['name']) && !empty($this->aURLs[$i]['argument']['@attributes']['name'])) {
