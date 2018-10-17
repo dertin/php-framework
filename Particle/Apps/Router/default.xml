@@ -8,6 +8,14 @@
       <ignorepreg>/[^a-z0-9-]/</ignorepreg>
   </rule>
 
+  <url request="/test">
+      <controller>index</controller>
+      <method>index</method>
+      <argument name="NameArgs">
+          <value>12345</value>
+      </argument>
+  </url>
+
   <url request="/*" rule="alfanum" argumentname="rubro" jsonlist="rubros" wildcard="*">
       <controller>testing</controller>
       <method>index</method>

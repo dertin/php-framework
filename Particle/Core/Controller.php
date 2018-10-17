@@ -181,39 +181,4 @@ abstract class Controller extends Core\SpotLoad
 
         return $string;
     }
-
-    final protected static function uploadFile($File, $FullPatch, $allowedExts = false, $allowedTypes = false)
-    {
-        if (!$allowedExts) {
-            $allowedExts = array('jpg', 'jpeg', 'gif', 'png', 'zip');
-        }
-
-        if (!$allowedTypes) {
-            $allowedTypes = array('image/gif', 'image/jpeg', 'image/pjpeg');
-        }
-
-        $extension = end(explode('.', $File['name']));
-        // TODO: add $allowedTypes
-        if (($File['size'] < 20000) && in_array($extension, $allowedExts)) {
-            if ($File['error'] > 0) {
-                echo 'Return Code: '.$File['error'].'<br />';
-            } else {
-                echo 'Upload: '.$File['name'].'<br />';
-                echo 'Type: '.$File['type'].'<br />';
-                echo 'Size: '.($File['size'] / 1024).' Kb<br />';
-                echo 'Temp file: '.$File['tmp_name'].'<br />';
-
-                if (file_exists($FullPatch.$File['name'])) {
-                    echo $File['name'].' already exists. ';
-                } else {
-                    move_uploaded_file($File['tmp_name'], $FullPatch.$File['name']);
-                    echo 'Stored in: '.$FullPatch.$File['name'];
-
-                    return $FullPatch.$File['name'];
-                }
-            }
-        } else {
-            echo 'Error - Invalid File';
-        }
-    }
 }

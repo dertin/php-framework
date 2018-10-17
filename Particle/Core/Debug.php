@@ -11,7 +11,7 @@ namespace Particle\Core;
  **/
 final class Debug
 {
-    final public static function savelogfile($id, $location, $message, $filename = 'error.log')
+    final public static function savelogfile($id, $location, $message, $filename = 'error')
     {
         //
         // id: Error ID
@@ -20,10 +20,8 @@ final class Debug
         // filename: Log file path
         //
         // Usage: Core\Debug::savelogfile(1, 'index.php:33', 'Mensaje de Error');
-        //
-        // TODO: ultimo parametro $filename sin utilizar
-        //
-        $filename = $_SERVER['DOCUMENT_ROOT'].'/error.log';
+
+        $filename = $_SERVER['DOCUMENT_ROOT'].DS.$filename.'.log';
 
         $file = fopen($filename, 'a');
 

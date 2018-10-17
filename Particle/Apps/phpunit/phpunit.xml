@@ -1,6 +1,6 @@
 <phpunit bootstrap="bootstrap.php"
 colors="true"
-processIsolation="true"
+processIsolation="false"
 verbose="false"
 printerClass="Sempro\PHPUnitPrettyPrinter\PrettyPrinter">
   <testsuites>
