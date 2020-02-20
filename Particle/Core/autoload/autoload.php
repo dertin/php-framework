@@ -11,3 +11,6 @@ require_once PARTICLE_PATH_APPS.'vendor'.DS.'autoload.php';
 
 // Autoload namespace Particle\Apps (Controllers And Entities)
 require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload_apps.php';
+
+// Autoload namespace
+require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload_libs.php';

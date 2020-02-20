@@ -1,10 +1,12 @@
 <?php
+// phpcs:disable PSR1.Files.SideEffects
 
 namespace Particle\Apps;
 
 define('TYPEMODE', 'DEBUG');
 define('NAMEHOST', 'host');
 define('SITENAME', 'Site.com');
+define('DEFAULT_TITLE', 'PHP FRAMEWORK');
 
 /* PATHS */
 define('ADDONS_FOLDER', 'Addons');
@@ -15,9 +17,8 @@ define('DEFAULT_CONTROLLER', 'index');
 define('DEFAULT_METHOD', 'index');
 define('DEFAULT_LAYOUT', 'default');
 define('PUBLIC_IMG_PATH', PUBLIC_PATH.'images'.DS);
-define('SMARTY_CACHE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'cache-smarty'.DS);
-define('SMARTY_COMPILE_DIR', PARTICLE_PATH_CORE.'tmp'.DS.'template-compiler-smarty'.DS);
 define('SMARTY_CONFIG_DIR', PARTICLE_PATH_APPS.VIEWS_FOLDER.DS.'layout'.DS.DEFAULT_LAYOUT.DS.'configs-smarty'.DS.NAMEHOST.DS);
+
 
 /* URLs */
 define('HOME_URL', 'https://www.site.com/');

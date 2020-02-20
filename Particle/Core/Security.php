@@ -37,10 +37,8 @@ final class Security
 
     final public static function filterInt($int, $default = 0)
     {
-        $int = (int) $int;
-
-        if (is_int($int)) {
-            return $int;
+        if (is_numeric($int)) {
+            return (int)$int;
         } else {
             return $default;
         }
@@ -343,12 +341,13 @@ final class Security
         $decrypted = substr($decrypted, 0, -32);
         // Integrity check.  If this fails, either the data is corrupted, or the password/salt was incorrect.
         if (md5($decrypted) != $verifyMD5) {
-            Core\Debug::savelogfile(0, 'ERROR', 'decrypt() invalid verify MD5');
+            Debug::savelogfile(0, 'ERROR', 'decrypt() invalid verify MD5');
             return false;
         }
         return $decrypted;
     }
 
+    /* Deprecated */
     final public static function getIp()
     {
         /*$requestIP = '';
@@ -448,7 +447,7 @@ final class Security
 
         $client_ip = self::getIPNoFORWARDED();
 
-        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
+        $filename = ROOT.'preventBF-'.$nameZone.'.log';
 
         $file = @fopen($filename, 'r');
         if (!$file) {
@@ -483,7 +482,7 @@ final class Security
         }
 
         $client_ip = self::getIPNoFORWARDED();
-        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
+        $filename = ROOT.'preventBF-'.$nameZone.'.log';
         $file = @fopen($filename, 'a');
         if (!$file) {
             $file = null;
@@ -500,7 +499,7 @@ final class Security
     {
         $client_ip = self::getIPNoFORWARDED();
 
-        $filename = $_SERVER['DOCUMENT_ROOT'].'/preventBF-'.$nameZone.'.log';
+        $filename = ROOT.'preventBF-'.$nameZone.'.log';
 
         $file = @fopen($filename, 'r');
         if (!$file) {

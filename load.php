@@ -2,21 +2,31 @@
 
 namespace Particle;
 
+use Particle\Core;
+
 ob_start();
 ob_implicit_flush(0);
 
 error_reporting(E_ALL);  // Add strict
 ini_set('display_errors', '1');  // mostrar errores
 
-
-// Constants configuration
-require_once 'config.php';
-configFramework();
-
-// Autoload
-require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload.php';
-
 try {
+    // Constants configuration
+    require_once 'config.php';
+
+    $blnConfigFramework = configFramework();
+    if (!$blnConfigFramework) {
+        throw new \Exception('UnexpectedConfig');
+    }
+
+    // Autoload
+    require_once PARTICLE_PATH_CORE.'autoload'.DS.'autoload.php';
+
+    if (session_status() == PHP_SESSION_NONE) {
+         //session_start();
+         Core\Session::singleton();
+    }
+
     if (OUTPUT_CONTROL) {
         // Get Unexpected output //
         $unexpected_output = ob_get_contents();
@@ -48,27 +58,30 @@ try {
             //Core\Debug::savelogfile(404, $e->getFile().$e->getLine(), 'NotFound: '.$sCurrURLFull);
 
             header('HTTP/1.1 404 Not Found', true, 404);
-            header("Status: 404 Not Found");
 
-        /*
-          NOTE: BE CAREFUL YOU CAN GENERATE A LOOP
-
-          if($sCurrURLExt != 'ico' && $sCurrURLExt != 'png' && $sCurrURLExt != 'jpg' && $sCurrURLExt != 'gif' && $sCurrURLExt != 'js' && $sCurrURLExt != 'css'){
-            $html404 = file_get_contents(HOME_URL.'info/e404');
-            echo $html404;
-          }
-        */
-        } else {
+            /* NOTE: BE CAREFUL YOU CAN GENERATE A LOOP*/
+            if (is_readable(ROOT.'error.html')) {
+                if ($sCurrURLExt != 'xml' && $sCurrURLExt != 'webp' && $sCurrURLExt != 'ico' && $sCurrURLExt != 'png' && $sCurrURLExt != 'jpg' && $sCurrURLExt != 'gif' && $sCurrURLExt != 'js' && $sCurrURLExt != 'css') {
+                    $html404 = file_get_contents(ROOT.'error.html');
+                    echo $html404;
+                }
+            }
+        } elseif ($srtExceptionMessage != 'UnexpectedConfig') {
             Core\Debug::savelogfile(500, $e->getFile().$e->getLine(), $srtExceptionMessage);
-            header('HTTP/1.1 500 Internal Server Error', true, 500);
-            /*
-              NOTE: BE CAREFUL YOU CAN GENERATE A LOOP
 
-              header('Location: '.HOME_URL.'info/e500');
-            */
+            header('HTTP/1.1 500 Internal Server Error', true, 500);
+
+            if (is_readable(ROOT.'error-interno.html')) {
+                  $html500 = file_get_contents(ROOT.'error-interno.html');
+                  echo $html500;
+            }
+        } else {
+            header('HTTP/1.1 400 Bad request', true, 400);
+            echo 'Fatal error!';
         }
     } catch (\Exception $e) {
-        echo 'Fatal error, no error log generated!';
+        header('HTTP/1.1 400 Bad request', true, 400);
+        echo 'Fatal error!';
     }
 
     exit();

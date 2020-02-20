@@ -5,8 +5,6 @@ namespace Particle\Apps\Entities;
 use Spot\EntityInterface as Entity;
 use Spot\MapperInterface as Mapper;
 
-// use Particle\Apps\Entities\Mapper;
-
 class Person extends \Spot\Entity
 {
     protected static $table = 'person';

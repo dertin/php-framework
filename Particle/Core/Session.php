@@ -78,7 +78,7 @@ final class Session extends \SessionHandler
 
         session_name($this->name);
 
-        $sessionPath = SYS_TEMP_DIR;
+        $sessionPath = SESSION_DIR;
         session_save_path($sessionPath);
     }
 
@@ -199,10 +199,6 @@ final class Session extends \SessionHandler
 
     public function purge(): bool
     {
-        // if (empty($maxlifetime)) {
-        //     $maxlifetime = SESSION_GC_TIME;
-        // }
-        //parent::gc($maxlifetime);
         session_gc();
         $this->forget();
         return true;

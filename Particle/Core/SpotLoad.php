@@ -38,9 +38,9 @@ class SpotLoad
 
             self::$spotInstance = new \Spot\Locator($cfg);
         }
-        if (!isset(self::$spotCache)) {
+        if (CACHE_DB && !isset(self::$spotCache)) {
             CacheManager::setDefaultConfig(new ConfigurationOption([
-              'path' => sys_get_temp_dir(),
+              'path' => CACHE_DB_PATH,
             ]));
             self::$spotCache = CacheManager::getInstance('files');
         }

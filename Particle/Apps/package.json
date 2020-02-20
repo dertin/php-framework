@@ -1,0 +1,15 @@
+{
+    "name": "php-framework",
+    "version": "1.0.0",
+    "scripts": {
+        "autoclean": "yarn autoclean --force"
+    },
+    "private": true,
+    "flat": false,
+    "dependencies": {
+        "bootstrap": "^3.4.1"
+    },
+    "devDependencies": {
+        "cypress": "^3.6.0"
+    }
+}

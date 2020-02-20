@@ -20,15 +20,19 @@ final class Debug
         //
         // Usage: Core\Debug::savelogfile(1, 'index.php:33', 'Mensaje de Error');
         //
-        $filename = $_SERVER['DOCUMENT_ROOT'].DS.$filename.'.log';
+        $filename = ROOT.$filename.'.log';
 
         $file = fopen($filename, 'a');
 
         if (!is_string($location) || !is_string($message)) {
             throw new \Exception('Incorrect datatype for save log');
         }
-        $ip = Security::getIp();
-        fwrite($file, '['.date('Y-m-d H:i:s')."][$ip][ERROR $id][$location][$message]".PHP_EOL);
+        $ip = Security::getIPNoFORWARDED();
+        $type = 'INFO';
+        if ($id > 0) {
+            $type = 'ERROR '. $id;
+        }
+        fwrite($file, '['.date('Y-m-d H:i:s')."][$ip][$type][$location][$message]".PHP_EOL);
 
         fclose($file);
     }

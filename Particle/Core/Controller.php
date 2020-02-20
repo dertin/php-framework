@@ -109,20 +109,20 @@ abstract class Controller extends Core\SpotLoad
             $array = $_POST;
         }
 
-
         if (isset($array[$key]) && !empty($array[$key])) {
-            if (!isset($_SESSION) || (isset($_SESSION) && $array != $_SESSION)) {
-                if ($array == $_GET) {
-                    $input = INPUT_GET;
-                } elseif ($array == $_POST) {
-                    $input = INPUT_POST;
-                } elseif ($array == $_COOKIE) {
-                    $input = INPUT_COOKIE;
-                } else {
-                    return false;
-                }
-                $array[$key] = filter_input($input, $key, FILTER_VALIDATE_INT);
-            }
+            // TODO: check this
+            // if (!isset($_SESSION) || (isset($_SESSION) && $array != $_SESSION)) {
+            //     if ($array == $_GET) {
+            //         $input = INPUT_GET;
+            //     } elseif ($array == $_POST) {
+            //         $input = INPUT_POST;
+            //     } elseif ($array == $_COOKIE) {
+            //         $input = INPUT_COOKIE;
+            //     } else {
+            //         return false;
+            //     }
+            //     $array[$key] = filter_input($input, $key, FILTER_VALIDATE_INT); // FILTER_SANITIZE_NUMBER_INT
+            // }
             $filterInt = Core\Security::filterInt($array[$key], $default);
             return $filterInt;
         }

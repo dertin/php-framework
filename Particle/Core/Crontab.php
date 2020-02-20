@@ -17,7 +17,8 @@ final class Crontab
         if (SESSION_GC == 'crontab') {
             $session = Core\Session::singleton();
             $session->purge();
+            echo "run.purge";
         }
     }
 }
-// crontab -l | { cat; echo "* 1 * * * /usr/local/php7/bin/php /var/www/tufiesta.grupolfmedia.com/htdocs/Particle/Cli/crontab.php >/dev/null 2>&1"; } | crontab -
+// crontab -l | { cat; echo "15 * * * * /usr/local/php7/bin/php /var/www/webdisk/site.com/htdocs/Particle/Cli/crontab.php >/dev/null 2>&1"; } | crontab -

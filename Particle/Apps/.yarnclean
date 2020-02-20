@@ -1,0 +1,40 @@
+# jQuery
+jquery/src
+jquery/external
+jquery/dist/core.js
+jquery/dist/*.slim*.js
+jquery/dist/*.slim*.map
+
+# code coverage directories
+coverage
+.nyc_output
+
+# build scripts
+Makefile
+Gulpfile.js
+Gruntfile.js
+bower.json
+# package.json requerido por cypress
+
+# configs
+appveyor.yml
+circle.yml
+codeship-services.yml
+codeship-steps.yml
+wercker.yml
+.tern-project
+.gitattributes
+.editorconfig
+.*ignore
+.eslintrc
+.jshintrc
+.flowconfig
+.documentup.json
+.yarn-metadata.json
+.travis.yml
+
+# misc
+*.md
+AUTHORS.txt
+LICENSE.txt
+LICENSE

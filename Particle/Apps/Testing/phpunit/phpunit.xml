@@ -1,0 +1,31 @@
+<phpunit bootstrap="bootstrap.php"
+colors="true"
+convertErrorsToExceptions="true"
+convertNoticesToExceptions="true"
+convertWarningsToExceptions="true"
+processIsolation="false"
+verbose="true"
+printerClass="Sempro\PHPUnitPrettyPrinter\PrettyPrinter">
+
+  <testsuites>
+    <testsuite name="AllTests">
+        <directory>./tests</directory>
+    </testsuite>
+    <!--
+    <testsuite name="Addons">
+      <directory>./tests/addons</directory>
+    </testsuite>
+    <testsuite name="Controllers">
+      <directory>./tests/controllers</directory>
+    </testsuite>
+     <testsuite name="Addons">
+      <directory>./tests/error</directory>
+    </testsuite>
+    -->
+  </testsuites>
+  <php>
+    <env name="ENV_PHPUNIT" value="false" force="true" />
+    <ini name="display_errors" value="On" />
+    <ini name="display_startup_errors" value="On" />
+  </php>
+</phpunit>

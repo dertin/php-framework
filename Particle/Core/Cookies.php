@@ -52,7 +52,10 @@ final class Cookies
         } else {
             $expire = time()+((int) $duration);
         }
-
+        // TODO: Migrate PHP > 7.3 https://wiki.php.net/rfc/same-site-cookie
+        if ($secure) {
+            $path .= '; SameSite=Strict';
+        }
         $valueEncrypt = Core\Security::encrypt((string)$value, COOKIE_KEY, SALT_CODE);
 
         // Writes the cookie
@@ -87,6 +90,18 @@ final class Cookies
             return true;
         }
 
+        return false;
+    }
+    public static function writeBrowserCookie($strName, $value, $expire = 0)
+    {
+        $domain = ini_get('session.cookie_domain');
+        $path = ini_get('session.cookie_path');
+        $secure = isset($_SERVER['HTTPS']);
+        $bWriteCookie = setcookie($strName, $value, $expire, $path, $domain, $secure, false);
+        if ($bWriteCookie === true) {
+            $_COOKIE[$strName] = $value;
+            return true;
+        }
         return false;
     }
 }

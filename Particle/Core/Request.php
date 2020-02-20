@@ -223,13 +223,19 @@ final class Request
                         $this->flagMapping = true;
                         $this->controller = $this->aURLs[$i]['controller'];
                         $this->method = $this->aURLs[$i]['method'];
-                        
+
                         if (isset($this->aURLs[$i]['argument']) && !is_null($this->aURLs[$i]['argument'])) {
-                            if (isset($this->aURLs[$i]['argument']['value'])) {
-                                if (isset($this->aURLs[$i]['argument']['@attributes']['name']) && !empty($this->aURLs[$i]['argument']['@attributes']['name'])) {
-                                    $this->args[$this->aURLs[$i]['argument']['@attributes']['name']] = Core\Security::cleanHtml($this->aURLs[$i]['argument']['value']);
+                            if (isset($this->aURLs[$i]['argument']['@attributes'])) {
+                                $arrArgumentUnique = $this->aURLs[$i]['argument'];
+                                $this->aURLs[$i]['argument'] = array();
+                                $this->aURLs[$i]['argument'][0] = $arrArgumentUnique;
+                            }
+
+                            foreach ($this->aURLs[$i]['argument'] as $itemArgument) {
+                                if (isset($itemArgument['@attributes']['name']) && !empty($itemArgument['@attributes']['name'])) {
+                                    $this->args[$itemArgument['@attributes']['name']] = Core\Security::cleanHtml($itemArgument['value']);
                                 } else {
-                                    $this->args[] = Core\Security::cleanHtml($this->aURLs[$i]['argument']['value']);
+                                    $this->args[] = Core\Security::cleanHtml($itemArgument['value']);
                                 }
                             }
                         }
@@ -300,10 +306,20 @@ final class Request
             return false;
         } else {
             if (is_string($sWildCard) && !empty($sWildCard)) {
-                $result = array();
+                // if (substr($requestURL, -1) != '/') {
+                //     $requestURL .= '/';
+                // }
 
+                $arrRequestXML = explode("/", $requestXML);
+                $arrRequestURL = explode("/", $requestURL);
+
+                if (count($arrRequestXML) != count($arrRequestURL)) {
+                    return false;
+                }
+
+                $result = array();
                 $sPregRequest = '/^';
-                $requestTemp1 = str_replace($sWildCard, '(.+)', $requestXML);
+                $requestTemp1 = str_replace($sWildCard, '(.+)', $requestXML); // ([\s\S]*?)
                 $requestTemp2 = str_replace('/', '\/', $requestTemp1);
                 $sPregRequest .= $requestTemp2;
                 $sPregRequest .= '/';
